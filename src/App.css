@@ -1,123 +1,11 @@
-/* * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  background-color: #0f0f1a;
-  color: #ffffff;
-  font-family: 'Segoe UI', sans-serif;
-  min-height: 100vh;
-}
-
-.app-header {
-  padding: 24px 32px;
-  border-bottom: 1px solid #1e1e2e;
-}
-
-.app-header h1 {
-  font-size: 24px;
-  color: #a78bfa;
-}
-
-.app-main {
-  padding: 24px 32px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  max-width: 1100px;
-  margin: 0 auto;
-}
-
-.table-header {
-  display: grid;
-  grid-template-columns: 40px 2fr 1.5fr 1fr 1.5fr;
-  align-items: center;
-  padding: 10px 16px;
-  gap: 12px;
-  color: #888;
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  border-bottom: 1px solid #1e1e2e;
-  margin-bottom: 4px;
-}
-
-.coin-row {
-  display: grid;
-  grid-template-columns: 40px 2fr 1.5fr 1fr 1.5fr;
-  align-items: center;
-  padding: 14px 16px;
-  gap: 12px;
-  background: #1e1e2e;
-  border-radius: 10px;
-  transition: background 0.2s;
-  width: 100%;
-}
-
-.coin-row:hover {
-  background: #2a2a3e;
-  cursor: pointer;
-}
-
-.coin-rank {
-  color: #888;
-  font-size: 14px;
-}
-
-.coin-name-cell {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.coin-name-cell img {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
-.coin-name {
-  font-size: 15px;
-  font-weight: 600;
-}
-
-.coin-symbol {
-  font-size: 12px;
-  color: #888;
-  margin-top: 2px;
-}
-
-.coin-price {
-  font-size: 15px;
-  font-weight: 600;
-}
-
-.coin-change {
-  font-size: 13px;
-  font-weight: 500;
-}
-
-.positive {
-  color: #22c55e;
-}
-
-.negative {
-  color: #ef4444;
-}
-
-.coin-marketcap {
-  font-size: 13px;
-  color: #aaa;
-  white-space: nowrap; 
-}*/
 
 * {
 	margin: 0;
 	padding: 0;
 	box-sizing: border-box;
+}
+.app{
+	min-height: 100vh;
 }
 
 body {
@@ -135,14 +23,15 @@ body {
 .app-header h1 {
 	font-size: 32px;
 	font-weight: 700;
-	color: #a78bfa;
+	color: darkblue;
 	letter-spacing: -0.5px;
 }
 
 .app-subtitle {
 	color: #888;
-	font-size: 14px;
+	font-size: 24px;
 	margin-top: 6px;
+	font-weight: 900;
 }
 
 .app-main {
@@ -155,7 +44,7 @@ body {
 }
 
 .coin-card {
-	background: #1e1e2e;
+	/* background: #1e1e2e; */
 	border: 1px solid #2e2e3e;
 	border-radius: 14px;
 	padding: 18px;
@@ -201,7 +90,7 @@ body {
 }
 
 .coin-badge {
-	font-size: 11px;
+	font-size: 18px;
 	padding: 3px 8px;
 	border-radius: 20px;
 	font-weight: 500;
@@ -221,10 +110,12 @@ body {
 	font-size: 20px;
 	font-weight: 700;
 	margin-bottom: 6px;
+	background-color: aliceblue;
 }
 
 .coin-marketcap {
-	font-size: 11px;
+	font-weight: 900;
+	font-size: 12px;
 	color: #888;
 }
 
@@ -234,8 +125,8 @@ body {
 	width: 320px;
 	border-radius: 25px;
 	border: 1px solid #2e2e3e;
-	background: #1e1e2e;
-	color: #ffffff;
+	/* background: #1e1e2e; */
+	color: black;
 	font-size: 14px;
 	outline: none;
 	transition: border-color 0.2s;
@@ -248,7 +139,7 @@ body {
 }
 
 .search-bar:focus {
-	color: aliceblue;
+	color: black;
 }
 .search-bar::placeholder {
 	border-color: #ffffff;

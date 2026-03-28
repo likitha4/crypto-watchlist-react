@@ -1,0 +1,69 @@
+.detail-container {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 24px;
+  padding: 22px;
+  /* margin:12px 12px; */
+  height: 100vh;
+  width: 100%;
+  box-sizing: border-box;
+}
+*{
+    background-color: aliceblue;
+    color: black;
+}
+
+.detail-left {
+  display: flex;
+  /* margin: 10px; */
+  padding: 20px;
+  border: 0.1px solid white;
+  border-radius: 10px;
+  flex-direction: column;
+  
+  background-color: lightgrey;
+}
+.coin-price {
+  font-size: 20px;
+  font-weight: 500;
+  background-color: lightgray;
+}
+.detail-left img {
+  display: flex;
+  width: 29px;
+  height: 30px;
+}
+.coin-info {
+  /* color: whitesmoke; */
+  background-color: lightgray;
+  font-size: 20px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+.coin-change {
+    font-size: 18px;
+}
+
+.positive {
+  color: green;
+}
+.negative {
+  color: red;
+}
+
+.detail-right {
+  /* background-color: lightcyan; */
+  display: flex;
+  color: brown;
+  flex-direction: column;
+  align-self: stretch;
+}
+.coin-stat {
+  /* padding: 6px 6px; */
+  font-size: 18px;
+  color: black;
+  background-color: lightgray;
+}
+.chart-container{
+width: 100%;
+height:400px;
+}

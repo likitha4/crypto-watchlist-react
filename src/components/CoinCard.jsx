@@ -1,6 +1,6 @@
 import React from "react";
 
-const CoinCard = ({ coin, index }) => {
+const CoinCard = ({  coin, index, onClick }) => {
 	const isPositive = coin.price_change_percentage_24h >= 0;
 	return (
 		// <div className="coin-row">
@@ -26,7 +26,7 @@ const CoinCard = ({ coin, index }) => {
 
 		// </div>
 
-		<div className="coin-card">
+		<div className="coin-card" onClick={onClick}>
 			<div className="coin-card-top">
 				<div className="coin-card-identity">
 					<img src={coin.image} alt={coin.name} />
