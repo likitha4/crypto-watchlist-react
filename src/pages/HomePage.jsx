@@ -1,19 +1,24 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import CoinCard from "../components/CoinCard";
 import { useNavigate } from "react-router-dom";
+import useDebounce from "../hooks/useDebounce";
 import "../App.css";
-
+import SearchDropDown from "../components/SearchDropDown";
 
 const CACHE_KEY = "cryptoData";
 const CACHE_TIME_KEY = "lastFetch";
 const CACHE_DURATION = 5 * 60 * 1000;
 
-const HomePage=()=>{
-const [coins, setCoins] = useState([]);
+const HomePage = () => {
+  const [coins, setCoins] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [search, setSearch] = useState("");
-  const navigate=useNavigate();
+  const [searchResults, setSearchResults] = useState([]);
+  const debouncedSearch = useDebounce(search, 500);
+
+  const navigate = useNavigate();
+
   useEffect(() => {
     const cachedData = localStorage.getItem(CACHE_KEY);
     const lastFetch = Number(localStorage.getItem(CACHE_TIME_KEY));
@@ -25,9 +30,7 @@ const [coins, setCoins] = useState([]);
       return;
     }
 
-    fetch(
-      "http://localhost:8000/api/coins",
-    )
+    fetch("http://localhost:8000/api/coins")
       .then((response) => response.json())
       .then((data) => {
         if (data.status?.error_code === 429) {
@@ -50,10 +53,34 @@ const [coins, setCoins] = useState([]);
       });
   }, []);
 
-  const filteredCoins = coins.filter((coin) => {
-    return coin.name.toLowerCase().includes(search.toLowerCase());
-  });
+  useEffect(() => {
+    if (debouncedSearch === "") return;
+    let cancelled = false;
+
+    fetch(`http://localhost:8000/api/search?q=${debouncedSearch}`)
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data.coins[0]);
+        if (!cancelled) setSearchResults(data.coins);
+      })
+      .catch((error) => {
+        setError("No coins found");
+        console.log(error);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [debouncedSearch]);
+
+  const filteredCoins = useMemo(() => {
+    return coins.filter((coin) =>
+      coin.name.toLowerCase().includes(debouncedSearch.toLowerCase()),
+    );
+  }, [coins, debouncedSearch]);
+
   if (loading) return <p>Loading Prices...</p>;
+
   if (error) return <p>{error}</p>;
 
   return (
@@ -69,19 +96,25 @@ const [coins, setCoins] = useState([]);
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
+          {debouncedSearch && searchResults.length > 0 && (
+            <SearchDropDown searchResults={searchResults}></SearchDropDown>
+          )}
         </header>
         <main className="app-main">
-        {filteredCoins.length > 0 ? (
-            filteredCoins.map((coin, index) => (
-              <CoinCard key={coin.id} coin={coin} index={index} onClick={()=>navigate(`/coins/${coin.id}`)}></CoinCard>
-            ))
-          ) : (
-            <p className="status-msg">No coins found for "{search}"</p>
-          )}
+          {filteredCoins.length > 0
+            ? filteredCoins.map((coin, index) => (
+                <CoinCard
+                  key={coin.id}
+                  coin={coin}
+                  index={index}
+                  onClick={() => navigate(`/coins/${coin.id}`)}
+                ></CoinCard>
+              ))
+            : null}
         </main>
       </div>
     </>
   );
-}
+};
 
 export default HomePage;

@@ -53,6 +53,25 @@ app.get("/api/coins/:coinId", (req, res) => {
       res.send(`Error in fetching data `);
     });
 });
+
+app.get("/api/search",(req,res)=>{
+  const query=req.query.q;
+  axios.get(`https://api.coingecko.com/api/v3/search?query=${query}`,{
+    headers:{
+      'User-Agent':'Mozilla/5.0',
+      'Accept':'application/json'
+    }
+  }).then((result)=>{
+    res.json(result.data)
+  }).catch((error)=>{
+    console.log(error);
+    if(error.response?.status ==429){
+      res.send("Rate Limit error ")
+    }
+  })
+});
+
+
 app.listen(port, () => {
   console.log(`server is running on port ${port}`);
 });

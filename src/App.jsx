@@ -2,6 +2,7 @@ import CoinDetail from "./pages/CoinDetail";
 import HomePage from "./pages/HomePage";
 import "./App.css";
 import { Routes,Route } from "react-router-dom";
+import SearchDropDown from "./components/SearchDropDown";
 
 
 function App() {
