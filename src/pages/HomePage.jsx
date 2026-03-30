@@ -5,6 +5,7 @@ import useDebounce from "../hooks/useDebounce";
 import "../App.css";
 import SearchDropDown from "../components/SearchDropDown";
 
+const API_URL=import.meta.env.VITE_APP_URL
 const CACHE_KEY = "cryptoData";
 const CACHE_TIME_KEY = "lastFetch";
 const CACHE_DURATION = 5 * 60 * 1000;
@@ -30,7 +31,7 @@ const HomePage = () => {
       return;
     }
 
-    fetch("http://localhost:8000/api/coins")
+    fetch(`${API_URL}/coins`)
       .then((response) => response.json())
       .then((data) => {
         if (data.status?.error_code === 429) {
@@ -57,7 +58,7 @@ const HomePage = () => {
     if (debouncedSearch === "") return;
     let cancelled = false;
 
-    fetch(`http://localhost:8000/api/search?q=${debouncedSearch}`)
+    fetch(`API_URL/search?q=${debouncedSearch}`)
       .then((res) => res.json())
       .then((data) => {
         console.log(data.coins[0]);
@@ -81,7 +82,9 @@ const HomePage = () => {
 
   if (loading) return <p>Loading Prices...</p>;
 
-  if (error) return <p>{error}</p>;
+  if (error) return (<><p>{error}</p>
+    <button className="back" onClick={()=>navigate(-1)}>Back to list </button>
+  </>);
 
   return (
     <>

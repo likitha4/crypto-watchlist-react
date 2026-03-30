@@ -8,7 +8,7 @@ const port = process.env.PORT;
 
 app.use(cors());
 
-app.get("/api/coins", (req, res) => {
+app.get("/coins", (req, res) => {
   axios
     .get(
       "https://api.coingecko.com/api/v3/coins/markets?vs_currency=inr&order=market_cap_desc&per_page=10&page=1&sparkline=true",{
@@ -32,11 +32,11 @@ app.get("/api/coins", (req, res) => {
     });
 });
 
-app.get("/api/coins/:coinId", (req, res) => {
+app.get("/coins/:coinId", (req, res) => {
   const coinId=req.params.coinId;
   axios
     .get(
-      `https://api.coingecko.com/api/v3/coins/${coinId}`,{
+      `https://api.coingecko.com/api/v3/coins/${coinId}?localization=false&sparkline=true`,{
         headers:{
             'User-Agent':'Mozilla/5.0',
             'Accept':'application/json'
@@ -54,7 +54,7 @@ app.get("/api/coins/:coinId", (req, res) => {
     });
 });
 
-app.get("/api/search",(req,res)=>{
+app.get("/search",(req,res)=>{
   const query=req.query.q;
   axios.get(`https://api.coingecko.com/api/v3/search?query=${query}`,{
     headers:{

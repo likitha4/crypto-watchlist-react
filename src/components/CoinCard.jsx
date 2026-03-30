@@ -14,7 +14,7 @@ const CoinCard = ({  coin, index, onClick }) => {
         </div>
         <span className={`coin-badge ${isPositive ? "positive" : "negative"}`}>
           {isPositive ? "▲" : "▼"}
-          {Math.abs(coin.price_change_percentage_24h).toFixed(2)}%
+          {Math.abs(coin.price_change_percentage_24h?? 0).toFixed(2)}%
         </span>
       </div>
       <p className="coin-price">
