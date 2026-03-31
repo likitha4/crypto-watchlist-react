@@ -7,7 +7,7 @@ const axios = require("axios");
 const port = process.env.PORT || 8000;
 
 app.use(cors({
-  origin: ['http://localhost:5173', 'https://lessgo-crypto.onrender.com']
+  origin: ['http://localhost:5173', 'https://lessgo-crypto.onrender.com', "https://lessgocrypto.vercel.app"]
 }))
 
 app.get("/coins", (req, res) => {
