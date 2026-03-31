@@ -26,11 +26,12 @@ app.get("/coins", (req, res) => {
     })
     .catch((error) => {
         console.log(error.response?.status);
+          console.log(error.response?.data);
         if(error.response?.status==429){
-          res.send("Exceeded the Rate Limit")
-        console.log(error.response?.data);
+         return  res.status(429).json({error:"Exceeded the Rate Limit"})
+
         }
-      res.send(`Error in fetching data `);
+      return res.status(500).json({error:`Error in fetching data `});
     });
 });
 
@@ -68,7 +69,7 @@ app.get("/search",(req,res)=>{
   }).catch((error)=>{
     console.log(error);
     if(error.response?.status ==429){
-      res.send("Rate Limit error ")
+     return res.status(429).json({error:"Rate Limit error "});
     }
   })
 });
