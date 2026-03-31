@@ -16,7 +16,7 @@ const HomePage = () => {
   const [error, setError] = useState(null);
   const [search, setSearch] = useState("");
   const [searchResults, setSearchResults] = useState([]);
-  const debouncedSearch = useDebounce(search, 500);
+  const debouncedSearch = useDebounce(search, 1500);
 
   const navigate = useNavigate();
 
