@@ -6,7 +6,9 @@ const app = express();
 const axios = require("axios");
 const port = process.env.PORT;
 
-app.use(cors());
+app.use(cors({
+  origin: ['http://localhost:5173', 'https://lessgo-crypto.onrender.com']
+}))
 
 app.get("/coins", (req, res) => {
   axios
