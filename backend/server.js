@@ -4,7 +4,7 @@ const express = require("express");
 const cors = require("cors");
 const app = express();
 const axios = require("axios");
-const port = process.env.PORT;
+const port = process.env.PORT || 8000;
 
 app.use(cors({
   origin: ['http://localhost:5173', 'https://lessgo-crypto.onrender.com']
