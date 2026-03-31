@@ -57,12 +57,19 @@ const HomePage = () => {
   useEffect(() => {
     if (debouncedSearch === "") return;
     let cancelled = false;
-
+  const cached = localStorage.getItem(`search_${debouncedSearch}`)
+  if (cached) {
+    setSearchResults(JSON.parse(cached))
+    return
+  }
     fetch(`${API_URL}/search?q=${debouncedSearch}`)
       .then((res) => res.json())
       .then((data) => {
         console.log(data.coins[0]);
-        if (!cancelled) setSearchResults(data.coins);
+        if (!cancelled) {
+          setSearchResults(data.coins);
+          localStorage.setItem(`search_${debouncedSearch}`, JSON.stringify(data.coins))
+        }
       })
       .catch((error) => {
         setError("No coins found");
