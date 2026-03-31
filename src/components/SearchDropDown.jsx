@@ -1,5 +1,6 @@
-import { useState } from "react";
+
 import { useNavigate } from "react-router-dom";
+import './SearchDropDown.css'
 
 const SearchDropDown = ({ searchResults }) => {
   const navigate = useNavigate();

@@ -58,7 +58,7 @@ const HomePage = () => {
     if (debouncedSearch === "") return;
     let cancelled = false;
 
-    fetch(`API_URL/search?q=${debouncedSearch}`)
+    fetch(`${API_URL}/search?q=${debouncedSearch}`)
       .then((res) => res.json())
       .then((data) => {
         console.log(data.coins[0]);
@@ -83,7 +83,7 @@ const HomePage = () => {
   if (loading) return <p>Loading Prices...</p>;
 
   if (error) return (<><p>{error}</p>
-    <button className="back" onClick={()=>navigate(-1)}>Back to list </button>
+    <button className="back" onClick={()=>window.location.href='/'}>Try again </button>
   </>);
 
   return (

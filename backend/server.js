@@ -24,7 +24,7 @@ app.get("/coins", (req, res) => {
     })
     .catch((error) => {
         console.log(error.response?.status);
-        if(error.response.status==429){
+        if(error.response?.status==429){
           res.send("Exceeded the Rate Limit")
         console.log(error.response?.data);
         }

@@ -4,9 +4,11 @@
   gap: 24px;
   padding: 22px;
   /* margin:12px 12px; */
-  height: 100vh;
+  min-height: 100vh;
   width: 100%;
   box-sizing: border-box;
+  background-color: aliceblue;
+  color: black;
 }
 *{
     background-color: aliceblue;

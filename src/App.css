@@ -6,8 +6,13 @@
 }
 .app{
 	min-height: 100vh;
+	
 }
-
+button .back{
+	background-color: white;
+	color:black;
+	
+}
 body {
 	background-color: #0f0f1a;
 	color: #ffffff;
@@ -17,7 +22,9 @@ body {
 
 .app-header {
 	text-align: center;
+	position: relative;
 	padding: 40px 32px 24px;
+	
 }
 
 .app-header h1 {
@@ -39,8 +46,11 @@ body {
 	display: grid;
 	grid-template-columns: repeat(3, 1fr);
 	gap: 16px;
+	flex:1;
 	max-width: 1100px;
 	margin: 0 auto;
+	min-height: 60vh;
+	height: auto;
 }
 
 .coin-card {

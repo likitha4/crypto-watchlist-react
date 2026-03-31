@@ -103,7 +103,7 @@ const CoinDetail = () => {
         </div>
       </div>
       <div>
-        <button className="back" onClick={()=>navigate(-1)}>Back to list </button>
+        <button className="back" onClick={()=>navigate('/')}>Back to list </button>
       </div>
     </div>
   );
