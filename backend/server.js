@@ -12,7 +12,17 @@ app.use(cors({
   credentials: true
 }))
 
+let cachedCoins=null
+let lastfetch=null
+const CACHE_DURATION=5*60*1000
+
+
+
 app.get("/coins", (req, res) => {
+  const now=Date.now()
+  if(cachedCoins && lastfetch && (now-lastfetch<CACHE_DURATION)){ 
+    return res.json(cachedCoins);
+}
   axios
     .get(
       "https://api.coingecko.com/api/v3/coins/markets?vs_currency=inr&order=market_cap_desc&per_page=10&page=1&sparkline=true",{
