@@ -40,7 +40,11 @@ const CoinDetail = () => {
         .then((data) => setCoin(data));
     }
   }, [coinId]);
- if(!coin) return <p>Loading...</p>
+ if(!coin) return (
+ <div style={{minHeight:"100vh", display:"flex" , flexDirection:'column', alignItems:'center', justifyContent:'center' , gap:'16px'}}>
+
+  <p>Loading...</p>
+  </div>)
 
  const priceChange = coin.price_change_percentage_24h ?? coin.market_data?.price_change_percentage_24h ?? 0;
   const currentPrice = coin.current_price ?? coin.market_data?.current_price?.inr ?? 0;

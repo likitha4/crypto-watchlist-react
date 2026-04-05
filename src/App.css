@@ -44,7 +44,7 @@ body {
 .app-main {
 	padding: 24px 32px;
 	display: grid;
-	grid-template-columns: repeat(3, 1fr);
+	grid-template-columns: 1fr;
 	gap: 16px;
 	flex:1;
 	max-width: 1100px;
@@ -153,4 +153,29 @@ body {
 }
 .search-bar::placeholder {
 	border-color: #ffffff;
+}
+
+@media (min-width:768px) {
+	.app-main{
+		grid-template-columns: repeat(2,1fr);
+	}
+	
+}
+
+@media (min-width:1024px) {
+	.app-main{
+		grid-template-columns: repeat(3,1fr);
+	}
+	
+}
+@media (min-width:767px){
+	.search-bar{
+		width:90%
+	}
+	.app-header h1{
+		font-size: 24px;
+	}
+	.app-subtitle{
+		font-size: 18px;
+	}
 }

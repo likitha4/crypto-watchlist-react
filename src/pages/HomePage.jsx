@@ -87,11 +87,15 @@ const HomePage = () => {
     );
   }, [coins, debouncedSearch]);
 
-  if (loading) return <p>Loading Prices...</p>;
-
-  if (error) return (<><p>{error}</p>
+  if (loading) return (
+    <div style={{minHeight:"100vh", display:"flex" , flexDirection:'column', alignItems:'center', justifyContent:'center' , gap:'16px'}}>
+  <p>Loading Prices...</p>
+  </div>
+  )
+  if (error) return (
+  <div style={{minHeight:"100vh", display:"flex" , flexDirection:'column', alignItems:'center', justifyContent:'center' , gap:'16px'}}><p>{error}</p>
     <button className="back" onClick={()=>window.location.href='/'}>Try again </button>
-  </>);
+  </div>);
 
   return (
     <>
