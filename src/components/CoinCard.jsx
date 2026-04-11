@@ -22,7 +22,7 @@ const CoinCard = ({  coin, index, onClick }) => {
       </p>
       <p className="coin-marketcap">
         Mkt Cap: ₹{(coin.market_cap / 1e7).toFixed(2)} Cr
-      </p>
+      </p>"
     </div>
   );
 };
