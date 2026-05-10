@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import useDebounce from "../hooks/useDebounce";
 import "../App.css";
 import SearchDropDown from "../components/SearchDropDown";
-
+import { useAuth } from "../context/AuthContext";
 const API_URL=import.meta.env.VITE_APP_URL
 const CACHE_KEY = "cryptoData";
 const CACHE_TIME_KEY = "lastFetch";
@@ -18,6 +18,7 @@ const HomePage = () => {
   const [searchResults, setSearchResults] = useState([]);
   const debouncedSearch = useDebounce(search, 1500);
 
+  const {logout, token}= useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -86,6 +87,9 @@ const HomePage = () => {
       coin.name.toLowerCase().includes(debouncedSearch.toLowerCase()),
     );
   }, [coins, debouncedSearch]);
+  const externalResults = searchResults.filter(result =>
+    !coins.some(coin => coin.id === result.id)
+  )
 
   if (loading) return (
     <div style={{minHeight:"100vh", display:"flex" , flexDirection:'column', alignItems:'center', justifyContent:'center' , gap:'16px'}}>
@@ -97,10 +101,22 @@ const HomePage = () => {
     <button className="back" onClick={()=>window.location.href='/'}>Try again </button>
   </div>);
 
-  return (
-    <>
+  return (    
       <div className="app">
         <header className="app-header">
+  <div className="auth-buttons">
+  {token?(
+<button className="btn-logout" onClick={logout}>Logout</button>
+  ):(
+    <>
+    <button className="btn-login" onClick={()=>navigate('/login')}>Login</button>
+    <button className="btn-register" onClick={()=>navigate('/register')}>Register</button>
+    </>
+  )}
+  </div>
+
+
+
           <h1>LessGoCrypto</h1>
           <p className="app-subtitle">Live Prices in INR</p>
           <input
@@ -110,8 +126,8 @@ const HomePage = () => {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
-          {debouncedSearch && searchResults.length > 0 && (
-            <SearchDropDown searchResults={searchResults}></SearchDropDown>
+          {debouncedSearch && externalResults.length > 0 && (
+            <SearchDropDown searchResults={externalResults}></SearchDropDown>
           )}
         </header>
         <main className="app-main">
@@ -127,7 +143,7 @@ const HomePage = () => {
             : null}
         </main>
       </div>
-    </>
+    
   );
 };
 

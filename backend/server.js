@@ -5,6 +5,9 @@ const cors = require("cors");
 const app = express();
 const axios = require("axios");
 const port = process.env.PORT || 8000;
+const connectDB=require('./config/db')
+
+connectDB()
 
 app.use(cors({
   origin: ['http://localhost:5173', 'https://lessgo-crypto.onrender.com', "https://lessgocrypto.vercel.app"],
@@ -16,7 +19,8 @@ let cachedCoins=null
 let lastfetch=null
 const CACHE_DURATION=5*60*1000
 
-
+app.use(express.json())
+app.use('/api/auth',require('./routes/auth'))
 
 app.get("/coins", (req, res) => {
   const now=Date.now()

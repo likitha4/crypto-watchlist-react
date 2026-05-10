@@ -4,6 +4,61 @@
 	padding: 0;
 	box-sizing: border-box;
 }
+.auth-buttons{
+	position: absolute;
+	right: 32px;
+	top: 32px;
+	display: flex;
+	gap: 8px;
+	color: white;
+}
+.btn-logout{
+
+}
+.btn-login{
+	padding: 8px 16px;
+	border-radius: 20px;
+	border: 1px solid #a78bfa;
+	background: transparent;
+	color: #a78bfa;
+	font-size: 14px;
+	cursor: pointer;
+	transition: all 0.3s;
+}
+.btn-login:hover{
+	background: #a78bfa;
+  color: white;
+}
+.btn-register{
+	padding: 8px 16px;
+	border-radius: 20px;
+	border: none;
+	background: #a78bfa;
+	color: white;
+	font-size: 14px;
+	cursor: pointer;
+	transition: all 0.2s;
+}
+.btn-register:hover{
+	background: #9061f9;
+
+}
+.btn-logout{
+	padding: 8px 16px;
+	border-radius: 20px;
+	border: 1px solid #ef4444;
+	background: transparent;
+	color: #ef4444;
+	font-size: 13px;
+	cursor: pointer;
+	transition: all 0.2s;
+  
+}
+.btn-logout:hover {
+	background: #ef4444;
+	color: white;
+  }
+  
 .app{
 	min-height: 100vh;
 	
