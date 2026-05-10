@@ -46,8 +46,12 @@ const HomePage = () => {
       .catch(() => {
         const staleData = localStorage.getItem(CACHE_KEY);
         if (staleData) {
-          setCoins(JSON.parse(staleData));
+          const parsed=JSON.parse(staleData)
+          if(Array.isArray(parsed)){
+          setCoins(parsed);
           setLoading(false);
+          return
+          }
         } else {
           setError("failed to fetch data");
           setLoading(false);
@@ -83,6 +87,7 @@ const HomePage = () => {
   }, [debouncedSearch]);
 
   const filteredCoins = useMemo(() => {
+    if (!Array.isArray(coins)) return [] 
     return coins.filter((coin) =>
       coin.name.toLowerCase().includes(debouncedSearch.toLowerCase()),
     );
