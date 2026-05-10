@@ -17,7 +17,7 @@ app.use(cors({
 
 let cachedCoins=null
 let lastfetch=null
-const CACHE_DURATION=5*60*1000
+const CACHE_DURATION=10*60*1000
 
 app.use(express.json())
 app.use('/api/auth',require('./routes/auth'))
@@ -38,14 +38,19 @@ app.get("/coins", (req, res) => {
       }
     )
     .then((response) => {
+      cachedCoins=response.data;
+      lastfetch=Date.now();
      res.json(response.data)
     })
     .catch((error) => {
         console.log(error.response?.status);
           console.log(error.response?.data);
-        if(error.response?.status==429){
-         return  res.status(429).json({error:"Exceeded the Rate Limit"})
 
+        if(error.response?.status==429){
+          if(cachedCoins){
+            return res.json(cachedCoins);
+          }
+         return  res.status(429).json({error:"Exceeded the Rate Limit"})
         }
       return res.status(500).json({error:`Error in fetching data `});
     });
