@@ -131,7 +131,7 @@ const HomePage = () => {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
-          {debouncedSearch && externalResults.length > 0 && (
+          {token && debouncedSearch && externalResults.length > 0 && (
             <SearchDropDown searchResults={externalResults}></SearchDropDown>
           )}
         </header>
