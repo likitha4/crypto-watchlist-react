@@ -21,6 +21,8 @@ const CACHE_DURATION=10*60*1000
 
 app.use(express.json())
 app.use('/api/auth',require('./routes/auth'))
+app.use('/api/watchlist',require('./routes/watchlist'))
+
 
 app.get("/coins", (req, res) => {
   const now=Date.now()
