@@ -97,8 +97,8 @@ const HomePage = () => {
   )
 
   if (loading) return (
-    <div style={{minHeight:"100vh", display:"flex" , flexDirection:'column', alignItems:'center', justifyContent:'center' , gap:'16px'}}>
-  <p>Loading Prices...</p>
+    <div style={{minHeight:"100vh", display:"flex" , flexDirection:'column', alignItems:'center', justifyContent:'center' , gap:'16px', background:'#0f0f1a'}}>
+  <p style={{color:"white"}}>Loading Prices...</p>
   </div>
   )
   if (error) return (
@@ -111,7 +111,10 @@ const HomePage = () => {
         <header className="app-header">
   <div className="auth-buttons">
   {token?(
+    <>
 <button className="btn-logout" onClick={logout}>Logout</button>
+<button className="btn-watchlist" onClick={()=>navigate('/watchlist')}>Watchlist</button>
+</>
   ):(
     <>
     <button className="btn-login" onClick={()=>navigate('/login')}>Login</button>

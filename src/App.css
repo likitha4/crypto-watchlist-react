@@ -1,10 +1,9 @@
-
 * {
 	margin: 0;
 	padding: 0;
 	box-sizing: border-box;
 }
-.auth-buttons{
+.auth-buttons {
 	position: absolute;
 	right: 32px;
 	top: 32px;
@@ -12,10 +11,16 @@
 	gap: 8px;
 	color: white;
 }
-.btn-logout{
-
+.add-watchlist-btn {
+	cursor: pointer;
+	background-color: darkblue;
+	font-size: 16px;
+	line-height: 1;
+	padding: 2px;
+	border: none;
+	color: white;
 }
-.btn-login{
+.btn-watchlist {
 	padding: 8px 16px;
 	border-radius: 20px;
 	border: 1px solid #a78bfa;
@@ -25,11 +30,51 @@
 	cursor: pointer;
 	transition: all 0.3s;
 }
-.btn-login:hover{
-	background: #a78bfa;
-  color: white;
+.remove-coin {
+	padding: 8px 16px;
+	border-radius: 20px;
+	border: 1px solid red;
+	background: transparent;
+	color: red;
+	font-size: 8px;
+	cursor: pointer;
+	transition: all 0.3s;
 }
-.btn-register{
+.view-coin {
+	padding: 8px 16px;
+	border-radius: 20px;
+	border: 1px solid blue;
+	background: transparent;
+	color: blue;
+	font-size: 12px;
+	cursor: pointer;
+	transition: all 0.3s;
+}
+.btn-login {
+	padding: 8px 16px;
+	border-radius: 20px;
+	border: 1px solid #a78bfa;
+	background: transparent;
+	color: #a78bfa;
+	font-size: 14px;
+	cursor: pointer;
+	transition: all 0.3s;
+}
+.btn-home {
+	padding: 8px 16px;
+	border-radius: 20px;
+	border: 1px solid yellow;
+	background: solid black;
+	color: yellow;
+	font-size: 14px;
+	cursor: pointer;
+	transition: all 0.3s;
+}
+.btn-login:hover {
+	background: #a78bfa;
+	color: white;
+}
+.btn-register {
 	padding: 8px 16px;
 	border-radius: 20px;
 	border: none;
@@ -39,11 +84,10 @@
 	cursor: pointer;
 	transition: all 0.2s;
 }
-.btn-register:hover{
+.btn-register:hover {
 	background: #9061f9;
-
 }
-.btn-logout{
+.btn-logout {
 	padding: 8px 16px;
 	border-radius: 20px;
 	border: 1px solid #ef4444;
@@ -52,21 +96,18 @@
 	font-size: 13px;
 	cursor: pointer;
 	transition: all 0.2s;
-  
 }
 .btn-logout:hover {
 	background: #ef4444;
 	color: white;
-  }
-  
-.app{
-	min-height: 100vh;
-	
 }
-button .back{
+
+.app {
+	min-height: 100vh;
+}
+button .back {
 	background-color: white;
-	color:black;
-	
+	color: black;
 }
 body {
 	background-color: #0f0f1a;
@@ -79,7 +120,6 @@ body {
 	text-align: center;
 	position: relative;
 	padding: 40px 32px 24px;
-	
 }
 
 .app-header h1 {
@@ -101,7 +141,7 @@ body {
 	display: grid;
 	grid-template-columns: 1fr;
 	gap: 16px;
-	flex:1;
+	flex: 1;
 	max-width: 1100px;
 	margin: 0 auto;
 	min-height: 60vh;
@@ -196,6 +236,19 @@ body {
 	outline: none;
 	transition: border-color 0.2s;
 }
+.watchlist-container{
+	min-height: "100vh";
+				background: "#0f0f1a";
+				color: "white";
+				padding: "32px",
+}
+.watchlist-item{
+	display: flex;
+	align-items: center;
+	padding: 12px 0px;
+	gap: 12px;
+	border-bottom: 1px solid #2e2e3e;
+}
 .status-msg {
 	text-align: center;
 	color: #888;
@@ -210,27 +263,25 @@ body {
 	border-color: #ffffff;
 }
 
-@media (min-width:768px) {
-	.app-main{
-		grid-template-columns: repeat(2,1fr);
+@media (min-width: 768px) {
+	.app-main {
+		grid-template-columns: repeat(2, 1fr);
 	}
-	
 }
 
-@media (min-width:1024px) {
-	.app-main{
-		grid-template-columns: repeat(3,1fr);
+@media (min-width: 1024px) {
+	.app-main {
+		grid-template-columns: repeat(3, 1fr);
 	}
-	
 }
-@media (min-width:767px){
-	.search-bar{
-		width:90%
+@media (min-width: 767px) {
+	.search-bar {
+		width: 90%;
 	}
-	.app-header h1{
+	.app-header h1 {
 		font-size: 24px;
 	}
-	.app-subtitle{
+	.app-subtitle {
 		font-size: 18px;
 	}
 }

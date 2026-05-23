@@ -4,6 +4,7 @@ import "./App.css";
 import { Routes,Route } from "react-router-dom";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
+import Watchlist from "./pages/Watchlist";
 function App() {
   return (
     <>
@@ -12,6 +13,7 @@ function App() {
       <Route path='/coins/:coinId' element={<CoinDetail></CoinDetail>}></Route>
       <Route path='/login' element={<Login></Login>}/>
       <Route path='/register' element={<Register></Register>}/>
+      <Route path='/watchlist' element={<Watchlist></Watchlist>}/>
     </Routes>  
     </>
   );
