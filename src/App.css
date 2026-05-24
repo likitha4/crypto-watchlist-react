@@ -327,6 +327,9 @@ body {
 	.search-bar {
 		width: 90%;
 	}
+	.btn-home{
+		font-size: 8px;
+	}
 }
 
 @media (min-width: 1024px) {

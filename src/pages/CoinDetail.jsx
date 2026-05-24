@@ -45,7 +45,7 @@ const CoinDetail = () => {
 					className="btn-register"
 					onClick={() => navigate("/login")}>{" "}
 				Login</button>
-				<button className="btn-home" onClick={() => navigate("/")} >
+				<button className="btn-login" onClick={() => navigate("/")} >
 				Back to Home</button>
 			</div>
 		);
@@ -114,6 +114,10 @@ const CoinDetail = () => {
 	};
 
 	return (
+		<div style={{ padding: '16px',  minHeight: '100vh' }}>
+		<button className="btn-back" onClick={() => navigate("/")}>
+					Back
+				</button>
 		<div className="detail-container">
 			<div className="detail-left">
 				<img src={coin.image?.large || coin.image || ""} alt={coin.name} />
@@ -152,12 +156,8 @@ const CoinDetail = () => {
 						</div>
 					)}
 				</div>
-			</div>
-		
-				<button className="btn-home" onClick={() => navigate("/")}>
-					Back
-				</button>
-		
+			</div>		
+		</div>
 		</div>
 	);
 };

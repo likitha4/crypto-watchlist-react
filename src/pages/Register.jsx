@@ -12,6 +12,15 @@ function Register() {
 
 const handleSubmit= async(e)=>{
     e.preventDefault()
+      const emailRegex= /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+      if(!emailRegex.test(email)){
+        setError('Please enter valid mail address');
+        return 
+       }
+    if(password.length<6){
+        setError('Minimum password length should be of 6 characters')
+        return 
+    }
     try{
         const res= await fetch(`${API_URI}/api/auth/register`,
             {
@@ -36,9 +45,9 @@ const handleSubmit= async(e)=>{
         <div className='auth-card'>
         <h3>Register</h3>
         <label>Email</label>
-        <input type='email' className='auth-input' placeholder="Where do we connect with you?" value={email} onChange={(e)=>setEmail(e.target.value)}/>
+        <input type='email' required minLength={12} className='auth-input' placeholder="Where do we connect with you?" value={email} onChange={(e)=>setEmail(e.target.value)}/>
         <label>Password</label>
-        <input type='password' className='auth-input' placeholder='Keep this secret only you must know' value={password} onChange={(e)=>setPassword(e.target.value)}/>
+        <input type='password' required minLength={6} className='auth-input' placeholder='Keep this as secret and only you must know' value={password} onChange={(e)=>setPassword(e.target.value)}/>
         {error&& <p style={{color:'red'}}>{error}</p>}
         <button className="btn-register" onClick={handleSubmit}>Register</button>
         <p>Already Have an account? <span onClick={()=>navigate('/login')} style={{color:'#a78bfa', cursor:'pointer'}}>Login</span></p>

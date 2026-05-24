@@ -14,6 +14,15 @@ function Login() {
    
    const handleSubmit= async(e)=>{
        e.preventDefault()
+       const emailRegex= /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+       if(!emailRegex.test(email)){
+        setError('Please enter valid mail address');
+        return 
+       }
+        if(password.length<6){
+        setError('Minimum password length should be of 6 characters')
+        return 
+    }
        try{
            const res= await fetch(`${API_URI}/api/auth/login`,{
                  method:'POST',
@@ -39,9 +48,9 @@ return (
         <div className='auth-card'>
     <h3>Login</h3>
         <label>Email</label>
-        <input type='email' className='auth-input' placeholder="Last time you registered our application with which email ?" value={email} onChange={(e)=>setEmail(e.target.value)}/>
+        <input type='email' required className='auth-input' placeholder="Last time you registered our application with which email ?" value={email} onChange={(e)=>setEmail(e.target.value)}/>
         <label>Password</label>
-        <input type='password' className="auth-input" placeholder='Hopefully you remember the password that you used last time ' value={password} onChange={(e)=>setPassword(e.target.value)}/>
+        <input type='password' required className="auth-input" placeholder='Hopefully you remember the password that you used last time ' value={password} onChange={(e)=>setPassword(e.target.value)}/>
         {error&& <p style={{color:'red'}}>{error}</p>}
         <button className="btn-register" onClick={handleSubmit}>Login</button>
         <button className='btn-login' onClick={()=>navigate('/')}>Back to Home </button>
