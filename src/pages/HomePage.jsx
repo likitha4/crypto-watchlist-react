@@ -97,8 +97,8 @@ const HomePage = () => {
   )
 
   if (loading) return (
-    <div style={{minHeight:"100vh", display:"flex" , flexDirection:'column', alignItems:'center', justifyContent:'center' , gap:'16px', background:'#0f0f1a'}}>
-  <p style={{color:"white"}}>Loading Prices...</p>
+    <div style={{minHeight:"100vh", display:"flex" , flexDirection:'column', alignItems:'center', justifyContent:'center' , gap:'16px'}}>
+  <p style={{color:"red"}}>Loading Prices...</p>
   </div>
   )
   if (error) return (

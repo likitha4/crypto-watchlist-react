@@ -104,9 +104,11 @@ const CoinDetail = () => {
 				label: `${coin.name} in 7d`,
 				data: sparkLinePrices,
 				borderColor: isPositive ? "#22c55e" : "#ef4444",
+				backgroundColor: isPositive?"rgba(34, 197, 94, 0.1)":"rgba(239, 68, 68, 0.1)",
 				pointRadius: 0,
 				borderWidth: 1.5,
 				fill: true,
+			
 			},
 		],
 	};
@@ -117,30 +119,32 @@ const CoinDetail = () => {
 				<img src={coin.image?.large || coin.image || ""} alt={coin.name} />
 				<p className="coin-info">{coin.name}</p>
 
-				<div className="coin-price">
+				<span className="coin-price">
 					Current Price: ₹{currentPrice.toLocaleString("en-IN")}
-				</div>
-				<div className={`coin-change ${isPositive ? "positive" : "negative"}`}>
+				</span>
+				<span className={`coin-change ${isPositive ? "positive" : "negative"}`}>
 					24Hrs Change: {isPositive ? "▲" : "▼"}
 					{priceChange.toFixed(2)}%
-				</div>
-				<div className="coin-stat">
+				</span>
+				<span className="coin-stat">
 					Market cap: {(marketCap / 1e7).toFixed(2)} Cr
-				</div>
+				</span>
 
-				<div className="coin-stat">
+				<span className="coin-stat">
 					Supply: {(coin.circulating_supply ?? 0).toLocaleString("en-IN")}
-				</div>
-				<div className="coin-stat">
+				</span>
+				<span className="coin-stat">
 					24hr Volume: {((coin.total_volume ?? 0) / 1e7).toFixed(2)} Cr
-				</div>
+				</span>
 			</div>
 			<div className="detail-right">
 				<div className="chart-container">
 					{sparkLinePrices.length > 0 ? (
 						<Line
 							data={data}
-							options={{ maintainApectRatio: false, responsive: true }}
+							options={{ maintainApectRatio: false, responsive: true,
+								plugins:{ legend:{labels:{usePointStyle:true, pointStyle:'circle',color:'black',font:{size:12}}}
+							 }}}
 						></Line>
 					) : (
 						<div>
@@ -149,11 +153,11 @@ const CoinDetail = () => {
 					)}
 				</div>
 			</div>
-			<div>
-				<button className="back" onClick={() => navigate("/")}>
-					Back to list{" "}
+		
+				<button className="btn-home" onClick={() => navigate("/")}>
+					Back
 				</button>
-			</div>
+		
 		</div>
 	);
 };

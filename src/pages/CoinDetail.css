@@ -3,16 +3,14 @@
   grid-template-columns: 1fr;
   gap: 24px;
   padding: 22px;
-  /* margin:12px 12px; */
   min-height: 100vh;
   width: 100%;
   box-sizing: border-box;
-  background-color: aliceblue;
+  background-color: white;
   color: black;
 }
 *{
-    background-color: aliceblue;
-    color: black;
+    background-color: white;
 }
 .back{
   color:white;
@@ -31,11 +29,7 @@
   
   background-color: lightgrey;
 }
-.coin-price {
-  font-size: 20px;
-  font-weight: 500;
-  background-color: lightgray;
-}
+
 .detail-left img {
   display: flex;
   width: 29px;
@@ -59,14 +53,14 @@
 }
 
 .detail-right {
-  /* background-color: lightcyan; */
+  
   display: flex;
-  color: brown;
+  color: darkblue;
   flex-direction: column;
   align-self: stretch;
 }
 .coin-stat {
-  /* padding: 6px 6px; */
+
   font-size: 18px;
   color: black;
   background-color: lightgray;

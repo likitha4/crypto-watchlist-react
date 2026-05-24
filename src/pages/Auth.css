@@ -3,8 +3,10 @@
   align-items: center;
   display: flex;
   justify-content: center;
+  color: black;
 }
-.auth-card {
+
+.auth-card{
   width: 500px;
   padding: 12px;
   border-radius: 20px;
@@ -12,7 +14,9 @@
   flex-direction: column;
   gap: 16px;
 }
+
 .auth-input {
+  color: black;
   border: 1px solid #a78bfa;
   display: flex;
   border-radius: 8px;

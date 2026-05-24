@@ -44,6 +44,7 @@ return (
         <input type='password' className="auth-input" placeholder='Hopefully you remember the password that you used last time ' value={password} onChange={(e)=>setPassword(e.target.value)}/>
         {error&& <p style={{color:'red'}}>{error}</p>}
         <button className="btn-register" onClick={handleSubmit}>Login</button>
+        <button className='btn-login' onClick={()=>navigate('/')}>Back to Home </button>
         </div>
         </div>
   )

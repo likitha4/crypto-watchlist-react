@@ -44,9 +44,7 @@ export const WatchlistProvider = ({ children }) => {
 				console.log(data.error);
 				return;
 			}
-			setWatchlist((prev) =>
-				prev.map((item) => (item.coinId == coinId ? data : item)),
-			);
+			console.log(data,"data-db response")
 		} catch (error) {
 			console.log("Unable to add the selected coin");
 			setWatchlist((prev) => prev.filter((item) => item.coinId !== coinId));

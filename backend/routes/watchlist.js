@@ -20,10 +20,10 @@ router.post('/', authMiddleware, async(req,res)=>{
     else{
         const item= await new Watchlist({userId:req.user.id, coinId, coinName})
         await item.save()
-        return res.status(201).json({message: 'Added your chosen coin successfully in your handpicked watchlist'})
+        return res.status(201).json(item)
     }
 }catch(error){
-    res.status(500).json({error:'Error in saving the selected coins, please try again'})
+    res.status(500).json({error:error.message})
 }
 })
 router.delete('/:coinId', authMiddleware, async(req,res)=>{

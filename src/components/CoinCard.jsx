@@ -36,9 +36,9 @@ const CoinCard = ({ coin, index, onClick }) => {
 					{Math.abs(coin.price_change_percentage_24h ?? 0).toFixed(2)}%
 				</span>
 			</div>
-			<p className="coin-price">
+			<span className="coin-price">
 				₹{coin.current_price.toLocaleString("en-IN")}{" "}
-			</p>
+			</span>
 			<p className="coin-marketcap">
 				Mkt Cap: ₹{(coin.market_cap / 1e7).toFixed(2)} Cr
 			</p>
