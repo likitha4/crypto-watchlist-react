@@ -4,12 +4,11 @@
 	box-sizing: border-box;
 }
 .auth-buttons {
-	position: absolute;
-	right: 32px;
-	top: 32px;
+	flex-wrap: wrap;
 	display: flex;
 	gap: 8px;
 	color: white;
+	justify-content: center;
 }
 .add-watchlist-btn {
 	cursor: pointer;
@@ -63,8 +62,7 @@
 .btn-home {
 	padding: 8px 16px;
 	border-radius: 20px;
-	border: 1px solid yellow;
-	background: solid black;
+	background: black;
 	color: yellow;
 	font-size: 14px;
 	cursor: pointer;
@@ -109,7 +107,6 @@
 }
 
 body {
-	
 	color: #ffffff;
 	font-family: "Segoe UI", sans-serif;
 	min-height: 100vh;
@@ -119,6 +116,9 @@ body {
 	text-align: center;
 	position: relative;
 	padding: 40px 32px 24px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
 }
 
 .app-header h1 {
@@ -183,7 +183,7 @@ body {
 }
 
 .coin-name {
-	color:black;
+	color: black;
 	font-size: 14px;
 	font-weight: 600;
 }
@@ -215,7 +215,7 @@ body {
 	font-size: 20px;
 	font-weight: 700;
 	margin-bottom: 6px;
-	color:black;
+	color: black;
 }
 
 .coin-marketcap {
@@ -227,7 +227,7 @@ body {
 .search-bar {
 	margin-top: 16px;
 	padding: 10px 20px;
-	width: 320px;
+	width: 90%;
 	border-radius: 25px;
 	border: 1px solid #2e2e3e;
 	color: black;
@@ -283,11 +283,11 @@ body {
 	transition: border-color 0.2s;
 }
 .watchlist-item:hover {
-	border-color:  #a78bfa;
+	border-color: #a78bfa;
 }
 .watchlist-actions {
 	display: flex;
-	gap:8px;
+	gap: 8px;
 }
 .watchlist-coin-name {
 	font-size: 16px;
@@ -311,21 +311,26 @@ body {
 	.app-main {
 		grid-template-columns: repeat(2, 1fr);
 	}
+	.auth-buttons {
+		right: 32px;
+		top: 32px;
+		position: absolute;
+		margin-bottom: 0;
+		justify-content: flex-end;
+	}
+	.app-header{
+		padding: 40px 32px 24px;
+	}
+		.app-subtitle {
+		font-size: 18px;
+	}
+	.search-bar {
+		width: 90%;
+	}
 }
 
 @media (min-width: 1024px) {
 	.app-main {
 		grid-template-columns: repeat(3, 1fr);
-	}
-}
-@media (min-width: 767px) {
-	.search-bar {
-		width: 90%;
-	}
-	.app-header h1 {
-		font-size: 24px;
-	}
-	.app-subtitle {
-		font-size: 18px;
 	}
 }
