@@ -25,6 +25,7 @@ app.use(
 app.use(express.json());
 app.use("/api/auth", require("./routes/auth"));
 app.use("/api/watchlist", require("./routes/watchlist"));
+app.use('/api/payment',require('./routes/payment'));
 
 app.get("/coins", async (req, res) => {
 	try {
