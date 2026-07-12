@@ -19,6 +19,10 @@ export const WatchlistProvider = ({ children }) => {
 					method: "GET",
 					headers: { Authorization: `Bearer ${token}` },
 				});
+				if(!response.ok){
+					setWatchlist([]);
+					return;
+				}
 				console.log("Watchlist response status", response.status);
 				const data = await response.json();
 				console.log("watchlist data", data);
