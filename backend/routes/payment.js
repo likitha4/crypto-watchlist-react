@@ -27,7 +27,7 @@ router.post("/create-order", authMiddleware, async (req, res) => {
     await investment.save();
     res.json(order);
   } catch (error) {
-    console.log(error,"failed to create order")
+    console.log(error, "failed to create order");
     res.status(500).json({ error: "failed to create order" });
   }
 });
@@ -39,7 +39,7 @@ router.post("/verify", authMiddleware, async (req, res) => {
     const expectedSignature = crypto
       .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
       .update(body)
-      .digest('hex');
+      .digest("hex");
 
     if (expectedSignature !== razorpay_signature) {
       return res.status(400).json({ error: "Payment Verification failed" });
@@ -60,5 +60,15 @@ router.post("/verify", authMiddleware, async (req, res) => {
     res.status(400).json({ error: " Verification Failed" });
   }
 });
-
+router.get("/investments/:coinId", authMiddleware, async (req, res) => {
+  try{
+  const investments = await Investment.find({
+    userId:req.user.id,
+    coinId:req.params.coinId,
+    status:"completed",
+  });
+  return res.json(investments);
+}catch(error){
+res.status(500).json({error:'Failed to fetch successful investments'})
+}});
 module.exports = router;

@@ -27,6 +27,9 @@ const CoinDetail = () => {
   const { coinId } = useParams();
   const [coin, setCoin] = useState(null);
   const [amount, setAmount] = useState("");
+  const [investing, setInvesting] = useState(false);
+  const [investments, setInvestments] = useState([]);
+  const [loadingInvestments, setLoadingInvestments] = useState(true);
   const navigate = useNavigate();
   const { token } = useAuth();
   if (!token) {
@@ -67,7 +70,28 @@ const CoinDetail = () => {
         .then((response) => response.json())
         .then((data) => setCoin(data));
     }
-  }, [coinId]);
+    const fetchInvestments = async () => {
+      try {
+        setLoadingInvestments(true);
+        const res = await fetch(
+          `${API_URL}/api/payment/investments/${coinId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        );
+        const data = await res.json();
+        setInvestments(data);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoadingInvestments(false);
+      }
+    };
+    if (token && coinId) fetchInvestments();
+  }, [coinId, token]);
+
   if (!coin)
     return (
       <div
@@ -116,42 +140,53 @@ const CoinDetail = () => {
     ],
   };
   const handleInvest = async () => {
+    if (investing) return;
     if (amount < 0 || !amount) {
       alert("Enter valid amount");
       return;
     }
+    setInvesting(true);
+    try {
+      const res = await fetch(`${API_URL}/api/payment/create-order`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ coinId: coinId, coinName: coin.name, amount }),
+      });
+      const order = await res.json();
+      const options = {
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+        amount: order.amount,
+        currency: order.currency,
+        order_id: order.id,
+        name: "LessGoCrypto",
+        description: `Investing in ${coin.name}`,
+        handler: async function (response) {
+          const verifyRes = await fetch(`${API_URL}/api/payment/verify`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(response),
+          });
+          const data = await verifyRes.json();
+          if(verifyRes.ok){
+          setAmount("");
+          await fetchInvestments();
+          }
+          setInvesting(false);
+          alert(data.message || data.error);
+        },
+      };
 
-    const res = await fetch(`${API_URL}/api/payment/create-order`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ coinId: coinId, coinName: coin.name, amount }),
-    });
-    const order = await res.json();
-	const options= {
-		key:import.meta.env.VITE_RAZORPAY_KEY_ID,
-		amount:order.amount,
-		currency:order.currency,
-		order_id:order.id,
-		name:'LessGoCrypto',
-		description:`Investing in ${coin.name}`,
-		handler: async  function(response){
-			const verifyRes= await fetch(`${API_URL}/api/payment/verify`,{
-				method:'POST',
-				headers:{
-					'Content-Type':'application/json',
-					Authorization:`Bearer ${token}`
-				},
-				body:JSON.stringify(response)
-			})
-			const data= await verifyRes.json();
-			alert(data.message);
-		}
-	}
-	const razorPayInstance=new window.Razorpay(options);
-	razorPayInstance.open();
+      const razorPayInstance = new window.Razorpay(options);
+      razorPayInstance.open();
+    } catch (error) {
+      setInvesting(false);
+    }
   };
 
   return (
@@ -183,9 +218,16 @@ const CoinDetail = () => {
               placeholder="Enter amount in Rs"
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
-			  min="1"
+              min="1"
             />
-            <button className="btn-invest" onClick={handleInvest}> 💰 Invest Now</button>
+            <button
+              className="btn-invest"
+              onClick={handleInvest}
+              disabled={investing}
+            >
+              {" "}
+              {investing ? "Processing" : "💰 Invest Now"}
+            </button>
           </div>
           <span className="coin-stat">
             Supply: {(coin.circulating_supply ?? 0).toLocaleString("en-IN")}
@@ -218,6 +260,25 @@ const CoinDetail = () => {
               <div>
                 <p>No chart available ...</p>
               </div>
+            )}
+          </div>
+          <div className="investment-history">
+            <h3>Investments in {coin.name}</h3>
+            {loadingInvestments ?(
+              <p>Loading Investments... </p>
+            ):
+            investments.length == 0 ? (
+              <p>No successful investment yet.</p>
+            ) : (
+              investments.map((investment) => {
+                return (
+                  <div key={investment._id}>
+                    <p>Amount: {investment.amount}</p>
+                    <p> Status: {investment.status}</p>
+                    <p>Payment Id: {investment.razorpayPaymentId}</p>
+                  </div>
+                );
+              })
             )}
           </div>
         </div>

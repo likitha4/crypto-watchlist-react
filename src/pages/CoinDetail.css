@@ -90,6 +90,7 @@
 	flex-direction: column;
 	gap:8px;
 	margin-top: 16px;
+	background: border-box;
 }
 .invest-input{
 	padding: 10px 14px;
