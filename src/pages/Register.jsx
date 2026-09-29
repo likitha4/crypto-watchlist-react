@@ -25,6 +25,7 @@ const handleSubmit= async(e)=>{
         const res= await fetch(`${API_URI}/api/auth/register`,
             {
                 method:'POST',
+                credentials:'include',
                 headers:{'Content-Type':'application/json'},
                 body:JSON.stringify({email,password})
             })

@@ -17,7 +17,7 @@ export const WatchlistProvider = ({ children }) => {
 			try {
 				const response = await fetch(`${API_URL}/api/watchlist`, {
 					method: "GET",
-					headers: { Authorization: `Bearer ${token}` },
+					credentials:'include',
 				});
 				if(!response.ok){
 					setWatchlist([]);
@@ -36,10 +36,9 @@ export const WatchlistProvider = ({ children }) => {
 		try {
 			const res = await fetch(`${API_URL}/api/watchlist`, {
 				method: "POST",
+				credentials:'include',
 				headers: {
-					"Content-Type": "application/json",
-					Authorization: `Bearer ${token}`,
-				},
+					"Content-Type": "application/json"				},
 				body: JSON.stringify({ coinId, coinName }),
 			});
 			const data = await res.json();
@@ -59,8 +58,7 @@ export const WatchlistProvider = ({ children }) => {
 		try {
 			const res = await fetch(`${API_URL}/api/watchlist/${coinId}`, {
 				method: "DELETE",
-				headers: { Authorization: `Bearer ${token}` },
-			});
+				credentials:'include'			});
 			await res.json();
 			setWatchlist((prev) => prev.filter((coin) => coin.coinId !== coinId));
 		} catch (error) {

@@ -3,6 +3,7 @@ const router = express.Router();
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const authMiddleware = require("../middleware/authMiddleware");
 
 router.post("/register", async (req, res) => {
 	const { email, password } = req.body;
@@ -34,10 +35,30 @@ router.post("/login", async (req, res) => {
 		const jwtoken = jwt.sign({ id: existingUser._id }, process.env.JWT_SECRET, {
 			expiresIn: "7d",
 		});
-		return res.json({ token: jwtoken });
+		res.cookie('token', jwtoken,{
+			httpOnly:true, secure:true, sameSite:'none', maxAge:7*24*60*60*1000
+		});
+ return res.json({message:'Login Successful'})
 	} catch (error) {
 		return res.status(500).json({ error: "Error in logging " });
 	}
 });
+router.get('/me', authMiddleware, async(req,res)=>{
+	try{
+		const user= await User.findById(req.user.id).select('-password')
+		res.json({user})
 
+	}catch(error){
+		res.status(401).json({error:'Not authorized'})
+	}
+})
+
+router.post('/logout',(req,res)=>{
+	res.clearCookie('token',{
+		httpOnly:true,
+		secure:true,
+		sameSite:'none'
+	})
+	res.json({message:'Logged out successfully'})
+})
 module.exports = router;

@@ -26,6 +26,7 @@ function Login() {
        try{
            const res= await fetch(`${API_URI}/api/auth/login`,{
                  method:'POST',
+                 credentials:'include',
                  headers:{'Content-Type':'application/json'},
                  body:JSON.stringify({email, password})
                 })
@@ -34,11 +35,11 @@ function Login() {
                    setError(data.error)
                   return
                }
-               login(data.token)
+               
                navigate('/')
        }
        catch(error){
-           setError('Error in registering, will get back to you')
+           setError('Error in registering, please try again')
        }
   
 }

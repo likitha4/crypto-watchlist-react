@@ -5,6 +5,7 @@ import useDebounce from "../hooks/useDebounce";
 import "../App.css";
 import SearchDropDown from "../components/SearchDropDown";
 import { useAuth } from "../context/AuthContext";
+// import {FixedSizeGrid} from 'react-window'
 const API_URL=import.meta.env.VITE_APP_URL
 const CACHE_KEY = "cryptoData";
 const CACHE_TIME_KEY = "lastFetch";
@@ -29,6 +30,7 @@ const HomePage = () => {
     if (cachedData && lastFetch && now - lastFetch < CACHE_DURATION) {
       setCoins(JSON.parse(cachedData));
       setLoading(false);
+      console.log("coins", coins.length)
       return;
     }
 

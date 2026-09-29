@@ -30,9 +30,12 @@ const CoinDetail = () => {
   const [investing, setInvesting] = useState(false);
   const [investments, setInvestments] = useState([]);
   const [loadingInvestments, setLoadingInvestments] = useState(true);
+  const { isAuthenticated, loading } = useAuth();
+
   const navigate = useNavigate();
-  const { token } = useAuth();
-  if (!token) {
+
+  if (loading) return <h2>Loading ....</h2>;
+  if (!isAuthenticated) {
     return (
       <div
         style={{
@@ -59,7 +62,7 @@ const CoinDetail = () => {
   const cachedData = localStorage.getItem("cryptoData");
   console.log(cachedData, "cached Data");
   const coins = cachedData ? JSON.parse(cachedData) : [];
-  console.log(coins, "coins");
+  // console.log(coins, "coins");
   const coinFromLocal = coins.find((c) => c.id === coinId);
 
   useEffect(() => {
@@ -75,11 +78,7 @@ const CoinDetail = () => {
         setLoadingInvestments(true);
         const res = await fetch(
           `${API_URL}/api/payment/investments/${coinId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          },
+          { credentials: "include" },
         );
         const data = await res.json();
         setInvestments(data);
@@ -89,8 +88,8 @@ const CoinDetail = () => {
         setLoadingInvestments(false);
       }
     };
-    if (token && coinId) fetchInvestments();
-  }, [coinId, token]);
+    if (coinId) fetchInvestments();
+  }, [coinId]);
 
   if (!coin)
     return (
@@ -149,9 +148,9 @@ const CoinDetail = () => {
     try {
       const res = await fetch(`${API_URL}/api/payment/create-order`, {
         method: "POST",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({ coinId: coinId, coinName: coin.name, amount }),
       });
@@ -168,14 +167,14 @@ const CoinDetail = () => {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
             },
+            credentials: "include",
             body: JSON.stringify(response),
           });
           const data = await verifyRes.json();
-          if(verifyRes.ok){
-          setAmount("");
-          await fetchInvestments();
+          if (verifyRes.ok) {
+            setAmount("");
+            await fetchInvestments();
           }
           setInvesting(false);
           alert(data.message || data.error);
@@ -264,10 +263,9 @@ const CoinDetail = () => {
           </div>
           <div className="investment-history">
             <h3>Investments in {coin.name}</h3>
-            {loadingInvestments ?(
+            {loadingInvestments ? (
               <p>Loading Investments... </p>
-            ):
-            investments.length == 0 ? (
+            ) : investments.length == 0 ? (
               <p>No successful investment yet.</p>
             ) : (
               investments.map((investment) => {
