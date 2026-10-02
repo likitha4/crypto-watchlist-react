@@ -5,6 +5,7 @@ import useDebounce from "../hooks/useDebounce";
 import "../App.css";
 import SearchDropDown from "../components/SearchDropDown";
 import { useAuth } from "../context/AuthContext";
+import { AutoSizer } from "react-virtualized-auto-sizer";
 import {FixedSizeList} from 'react-window'
 const API_URL=import.meta.env.VITE_APP_URL
 const CACHE_KEY = "cryptoData";
@@ -156,15 +157,18 @@ const HomePage = () => {
             <SearchDropDown searchResults={externalResults}></SearchDropDown>
           )}
         </header>
-        <main className="app-main">
-          {filteredCoins.length > 0
-            ? 
-            <FixedSizeList height= {window.innerHeight-300}
+        <main className="app-main" style={{height:"calc(100vh-280px"}}>
+          {filteredCoins.length > 0 &&(
+            <AutoSizer>
+              {({height, width})=>(
+            <FixedSizeList height= {window.innerHeight-280}
             itemCount={Math.ceil(filteredCoins.length/COLUMN_COUNT)}
             itemSize={ROW_HEIGHT}
-            width="100%"
+            width={window.innerWidth}
             >{Row}</FixedSizeList>
-            : null}
+              )}
+              </AutoSizer>
+          )}
         </main>
       </div>
     
