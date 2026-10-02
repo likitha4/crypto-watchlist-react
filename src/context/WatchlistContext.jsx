@@ -5,11 +5,10 @@ const WatchlistContext = createContext();
 
 export const WatchlistProvider = ({ children }) => {
 	const [watchlist, setWatchlist] = useState([]);
-	const { token } = useAuth();
+	const { isAuthenticated } = useAuth();
 	const API_URL = import.meta.env.VITE_APP_URL;
 	useEffect(() => {
-		console.log(token, "token");
-		if (!token) {
+		if (!isAuthenticated) {
 			setWatchlist([]);
 			return;
 		}
@@ -30,7 +29,7 @@ export const WatchlistProvider = ({ children }) => {
 			} catch (error) {}
 		};
 		getWatchlist();
-	}, [token]);
+	}, [isAuthenticated]);
 	const addToWatchlist = async (coinId, coinName) => {
 		setWatchlist((prev) => [...prev, { coinId, coinName }]);
 		try {

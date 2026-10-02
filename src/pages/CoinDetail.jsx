@@ -12,6 +12,7 @@ import {
 } from "chart.js";
 import "./CoinDetail.css";
 import { useAuth } from "../context/AuthContext";
+import { useWatchlist } from "../context/WatchlistContext";
 
 ChartJS.register(
   Tooltip,
@@ -31,33 +32,8 @@ const CoinDetail = () => {
   const [investments, setInvestments] = useState([]);
   const [loadingInvestments, setLoadingInvestments] = useState(true);
   const { isAuthenticated, loading } = useAuth();
-
+  const {isInWatchlist, addToWatchlist, removeFromWatchlist}= useWatchlist()
   const navigate = useNavigate();
-
-  if (loading) return <h2>Loading ....</h2>;
-  if (!isAuthenticated) {
-    return (
-      <div
-        style={{
-          minHeight: "100vh",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: "16px",
-        }}
-      >
-        <p> Please login to view coin details</p>
-        <button className="btn-register" onClick={() => navigate("/login")}>
-          {" "}
-          Login
-        </button>
-        <button className="btn-login" onClick={() => navigate("/")}>
-          Back to Home
-        </button>
-      </div>
-    );
-  }
 
   const cachedData = localStorage.getItem("cryptoData");
   console.log(cachedData, "cached Data");
@@ -65,6 +41,21 @@ const CoinDetail = () => {
   // console.log(coins, "coins");
   const coinFromLocal = coins.find((c) => c.id === coinId);
 
+  const fetchInvestments = async () => {
+    try {
+      setLoadingInvestments(true);
+      const res = await fetch(
+        `${API_URL}/api/payment/investments/${coinId}`,
+        { credentials: 'include' },
+      );
+      const data = await res.json();
+      setInvestments(data);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoadingInvestments(false);
+    }
+  };
   useEffect(() => {
     if (coinFromLocal) {
       setCoin(coinFromLocal);
@@ -73,39 +64,50 @@ const CoinDetail = () => {
         .then((response) => response.json())
         .then((data) => setCoin(data));
     }
-    const fetchInvestments = async () => {
-      try {
-        setLoadingInvestments(true);
-        const res = await fetch(
-          `${API_URL}/api/payment/investments/${coinId}`,
-          { credentials: "include" },
-        );
-        const data = await res.json();
-        setInvestments(data);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoadingInvestments(false);
-      }
-    };
+    
     if (coinId) fetchInvestments();
   }, [coinId]);
 
-  if (!coin)
-    return (
-      <div
-        style={{
-          minHeight: "100vh",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: "16px",
-        }}
-      >
-        <p>Loading...</p>
-      </div>
-    );
+    if (loading) return <h2>Loading ....</h2>;
+
+    if (!isAuthenticated) {
+      return (
+        <div
+          style={{
+            minHeight: "100vh",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "16px",
+          }}
+        >
+          <p> Please login to view coin details</p>
+          <button className="btn-register" onClick={() => navigate("/login")}>
+            {" "}
+            Login
+          </button>
+          <button className="btn-login" onClick={() => navigate("/")}>
+            Back to Home
+          </button>
+        </div>
+      );
+    }
+    if (!coin)
+      return (
+        <div
+          style={{
+            minHeight: "100vh",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "16px",
+          }}
+        >
+          <p>Loading...</p>
+        </div>
+      );
 
   const priceChange =
     coin.price_change_percentage_24h ??
@@ -175,10 +177,21 @@ const CoinDetail = () => {
           if (verifyRes.ok) {
             setAmount("");
             await fetchInvestments();
+          } else{
+            alert("Payment Verification failed "|| data.error)
           }
           setInvesting(false);
           alert(data.message || data.error);
         },
+        modal:{
+          ondismiss: function(){
+            setInvesting(false)
+            alert('Payment cancelled')
+          }
+        },
+        theme:{
+          color:'#a78bfa'
+        }
       };
 
       const razorPayInstance = new window.Razorpay(options);
@@ -197,6 +210,11 @@ const CoinDetail = () => {
         <div className="detail-left">
           <img src={coin.image?.large || coin.image || ""} alt={coin.name} />
           <p className="coin-info">{coin.name}</p>
+          {isAuthenticated &&(
+            <button className="watchlist-btn"
+            onClick={()=>isInWatchlist(coin.id)? removeFromWatchlist(coin.id) :addToWatchlist(coin.id, coin.name)}>
+              {isInWatchlist(coin.id)? '❤️ In Watchlist': '🤍Add to Watch list'}
+            </button>)}
 
           <span className="coin-price">
             Current Price: ₹{currentPrice.toLocaleString("en-IN")}

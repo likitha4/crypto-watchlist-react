@@ -4,10 +4,10 @@ import { useWatchlist } from "../context/WatchlistContext";
 
 const CoinCard = ({ coin, index, onClick }) => {
 	const { addToWatchlist, removeFromWatchlist, isInWatchlist } = useWatchlist();
-	const { token } = useAuth();
+	const { isAuthenticated } = useAuth();
 	const handleWatchlist = (e) => {
 		e.stopPropagation();
-		if (!token) return;
+		if (!isAuthenticated) return;
 		if (isInWatchlist(coin.id)) {
 			removeFromWatchlist(coin.id);
 		} else {
@@ -22,7 +22,7 @@ const CoinCard = ({ coin, index, onClick }) => {
 					<img src={coin.image} alt={coin.name} />
 					<div>
 						<p className="coin-name">{coin.name}</p>
-						{token && (
+						{isAuthenticated && (
 							<button className="add-watchlist-btn" onClick={handleWatchlist}> Add to Watchlist
 								{" "}
 								{isInWatchlist(coin.id) ? "❤️" : "🤍"}

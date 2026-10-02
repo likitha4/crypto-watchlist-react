@@ -35,7 +35,7 @@ function Login() {
                    setError(data.error)
                   return
                }
-               
+               login()
                navigate('/')
        }
        catch(error){

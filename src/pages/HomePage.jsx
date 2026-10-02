@@ -5,7 +5,7 @@ import useDebounce from "../hooks/useDebounce";
 import "../App.css";
 import SearchDropDown from "../components/SearchDropDown";
 import { useAuth } from "../context/AuthContext";
-// import {FixedSizeGrid} from 'react-window'
+import {FixedSizeList} from 'react-window'
 const API_URL=import.meta.env.VITE_APP_URL
 const CACHE_KEY = "cryptoData";
 const CACHE_TIME_KEY = "lastFetch";
@@ -19,8 +19,10 @@ const HomePage = () => {
   const [searchResults, setSearchResults] = useState([]);
   const debouncedSearch = useDebounce(search, 1500);
 
-  const {logout, token}= useAuth();
+  const {logout, isAuthenticated}= useAuth();
   const navigate = useNavigate();
+  const COLUMN_COUNT = 3
+  const ROW_HEIGHT = 220
 
   useEffect(() => {
     const cachedData = localStorage.getItem(CACHE_KEY);
@@ -97,7 +99,21 @@ const HomePage = () => {
   const externalResults = searchResults.filter(result =>
     !coins.some(coin => coin.id === result.id)
   )
+ const Row= ({index, style})=>{
+  const startIndex = index* COLUMN_COUNT
+  const rowCoins= filteredCoins.slice(startIndex, startIndex+COLUMN_COUNT)
+  return (
+    <div style= {{...style, display:'flex', gap:'16px', padding: '0 32px'}}>
+      {rowCoins.map((coin)=>(
+        <div key= {coin.id} style= {{flex:1}}>
+          <CoinCard coin= {coin}
+          onClick={()=>navigate(`/coins/${coin.id}`)}/>
+        </div>
+      ))}
+    </div>
+  )
 
+ }
   if (loading) return (
     <div style={{minHeight:"100vh", display:"flex" , flexDirection:'column', alignItems:'center', justifyContent:'center' , gap:'16px'}}>
   <p style={{color:"red"}}>Loading Prices...</p>
@@ -112,7 +128,7 @@ const HomePage = () => {
       <div className="app">
         <header className="app-header">
   <div className="auth-buttons">
-  {token?(
+  {isAuthenticated?(
     <>
 <button className="btn-logout" onClick={logout}>Logout</button>
 <button className="btn-watchlist" onClick={()=>navigate('/watchlist')}>Watchlist</button>
@@ -136,20 +152,18 @@ const HomePage = () => {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
-          {token && debouncedSearch && externalResults.length > 0 && (
+          {isAuthenticated && debouncedSearch && externalResults.length > 0 && (
             <SearchDropDown searchResults={externalResults}></SearchDropDown>
           )}
         </header>
         <main className="app-main">
           {filteredCoins.length > 0
-            ? filteredCoins.map((coin, index) => (
-                <CoinCard
-                  key={coin.id}
-                  coin={coin}
-                  index={index}
-                  onClick={() => navigate(`/coins/${coin.id}`)}
-                ></CoinCard>
-              ))
+            ? 
+            <FixedSizeList height= {window.innerHeight-300}
+            itemCount={Math.ceil(filteredCoins.length/COLUMN_COUNT)}
+            itemSize={ROW_HEIGHT}
+            width="100%"
+            >{Row}</FixedSizeList>
             : null}
         </main>
       </div>

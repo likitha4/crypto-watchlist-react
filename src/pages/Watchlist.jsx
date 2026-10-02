@@ -5,9 +5,9 @@ import { useNavigate } from "react-router-dom";
 
 const Watchlist = () => {
 	const { watchlist, removeFromWatchlist } = useWatchlist();
-	const { token } = useAuth();
+	const { isAuthenticated } = useAuth();
 	const navigate = useNavigate();
-	if (!token) {
+	if (!isAuthenticated) {
 		return (
 			<>
 				<p>Login to view watchlist</p>
