@@ -1,13 +1,13 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useWindowSize } from "react";
 import CoinCard from "../components/CoinCard";
 import { useNavigate } from "react-router-dom";
 import useDebounce from "../hooks/useDebounce";
 import "../App.css";
 import SearchDropDown from "../components/SearchDropDown";
 import { useAuth } from "../context/AuthContext";
-import  AutoSizer  from "react-virtualized-auto-sizer";
-import {FixedSizeList} from 'react-window'
-const API_URL=import.meta.env.VITE_APP_URL
+import { FixedSizeList } from "react-window";
+
+const API_URL = import.meta.env.VITE_APP_URL;
 const CACHE_KEY = "cryptoData";
 const CACHE_TIME_KEY = "lastFetch";
 const CACHE_DURATION = 5 * 60 * 1000;
@@ -19,11 +19,13 @@ const HomePage = () => {
   const [search, setSearch] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const debouncedSearch = useDebounce(search, 1500);
+  const [columnCount, setColumnCount]= useState(2);
 
-  const {logout, isAuthenticated}= useAuth();
+  const { logout, isAuthenticated } = useAuth();
   const navigate = useNavigate();
-  const COLUMN_COUNT = 3
-  const ROW_HEIGHT = 220
+
+  // const COLUMN_COUNT = 2;
+  const ROW_HEIGHT = 200;
 
   useEffect(() => {
     const cachedData = localStorage.getItem(CACHE_KEY);
@@ -33,7 +35,9 @@ const HomePage = () => {
     if (cachedData && lastFetch && now - lastFetch < CACHE_DURATION) {
       setCoins(JSON.parse(cachedData));
       setLoading(false);
-      console.log("coins", coins.length)
+
+      console.log("coins", coins.length);
+
       return;
     }
 
@@ -51,11 +55,11 @@ const HomePage = () => {
       .catch(() => {
         const staleData = localStorage.getItem(CACHE_KEY);
         if (staleData) {
-          const parsed=JSON.parse(staleData)
-          if(Array.isArray(parsed)){
-          setCoins(parsed);
-          setLoading(false);
-          return
+          const parsed = JSON.parse(staleData);
+          if (Array.isArray(parsed)) {
+            setCoins(parsed);
+            setLoading(false);
+            return;
           }
         } else {
           setError("failed to fetch data");
@@ -65,20 +69,24 @@ const HomePage = () => {
   }, []);
 
   useEffect(() => {
-    if (debouncedSearch === "") return;
+    if (!debouncedSearch) return;
     let cancelled = false;
-  const cached = localStorage.getItem(`search_${debouncedSearch}`)
-  if (cached) {
-    setSearchResults(JSON.parse(cached))
-    return
-  }
+
+    const cached = localStorage.getItem(`search_${debouncedSearch}`);
+    if (cached) {
+      setSearchResults(JSON.parse(cached));
+      return;
+    }
     fetch(`${API_URL}/search?q=${debouncedSearch}`)
       .then((res) => res.json())
       .then((data) => {
         console.log(data.coins[0]);
         if (!cancelled) {
-          setSearchResults(data.coins);
-          localStorage.setItem(`search_${debouncedSearch}`, JSON.stringify(data.coins))
+          setSearchResults(data.coins || []);
+          localStorage.setItem(
+            `search_${debouncedSearch}`,
+            JSON.stringify(data.coins || []),
+          );
         }
       })
       .catch((error) => {
@@ -91,87 +99,153 @@ const HomePage = () => {
     };
   }, [debouncedSearch]);
 
+  useEffect(()=>{
+    const updateColumns =()=>{
+      setColumnCount(window.innerWidth<640? 1:2);
+
+    };
+    updateColumns();
+    window.addEventListener("resize",updateColumns);
+    return ()=>window.removeEventListener("resize", updateColumns);
+  },[])
+
   const filteredCoins = useMemo(() => {
-    if (!Array.isArray(coins)) return [] 
+    if (!Array.isArray(coins)) return [];
     return coins.filter((coin) =>
       coin.name.toLowerCase().includes(debouncedSearch.toLowerCase()),
     );
   }, [coins, debouncedSearch]);
-  const externalResults = searchResults.filter(result =>
-    !coins.some(coin => coin.id === result.id)
-  )
- const Row= ({index, style})=>{
-  const startIndex = index* COLUMN_COUNT
-  const rowCoins= filteredCoins.slice(startIndex, startIndex+COLUMN_COUNT)
-  return (
-    <div style= {{...style, display:'flex', gap:'16px', padding: '0 32px'}}>
-      {rowCoins.map((coin)=>(
-        <div key= {coin.id} style= {{flex:1}}>
-          <CoinCard coin= {coin}
-          onClick={()=>navigate(`/coins/${coin.id}`)}/>
-        </div>
-      ))}
-    </div>
-  )
 
- }
-  if (loading) return (
-    <div style={{minHeight:"100vh", display:"flex" , flexDirection:'column', alignItems:'center', justifyContent:'center' , gap:'16px'}}>
-  <p style={{color:"red"}}>Loading Prices...</p>
-  </div>
-  )
-  if (error) return (
-  <div style={{minHeight:"100vh", display:"flex" , flexDirection:'column', alignItems:'center', justifyContent:'center' , gap:'16px'}}><p>{error}</p>
-    <button className="back" onClick={()=>window.location.href='/'}>Try again </button>
-  </div>);
-
-  return (    
-      <div className="app">
-        <header className="app-header">
-  <div className="auth-buttons">
-  {isAuthenticated?(
-    <>
-<button className="btn-logout" onClick={logout}>Logout</button>
-<button className="btn-watchlist" onClick={()=>navigate('/watchlist')}>Watchlist</button>
-</>
-  ):(
-    <>
-    <button className="btn-login" onClick={()=>navigate('/login')}>Login</button>
-    <button className="btn-register" onClick={()=>navigate('/register')}>Register</button>
-    </>
-  )}
-  </div>
-
-
-
-          <h1>LessGoCrypto</h1>
-          <p className="app-subtitle">Live Prices in INR</p>
-          <input
-            type="text"
-            placeholder="Search coin"
-            className="search-bar"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-          {isAuthenticated && debouncedSearch && externalResults.length > 0 && (
-            <SearchDropDown searchResults={externalResults}></SearchDropDown>
-          )}
-        </header>
-        <main className="app-main" style={{height:"calc(100vh - 280px) ", width:"100%"}}>
-          {filteredCoins.length > 0 &&(
-            <AutoSizer>
-              {({height, width})=>(
-            <FixedSizeList height= {height}
-            itemCount={Math.ceil(filteredCoins.length/COLUMN_COUNT)}
-            itemSize={ROW_HEIGHT}
-            width={width}
-            >{Row}</FixedSizeList>
-              )}
-              </AutoSizer>
-          )}
-        </main>
+  const externalResults = searchResults.filter(
+    (result) => !coins.some((coin) => coin.id === result.id),
+  );
+  const Row = ({ index, style }) => {
+    const start = index * columnCount;
+    const rowCoins = filteredCoins.slice(start, start + columnCount);
+    return (
+      <div
+        style={{
+          ...style,
+          display: "flex",
+          gap: "12px",
+          padding: "0 8px",
+          boxSizing: "border-box",
+        }}
+      >
+        {rowCoins.map((coin) => (
+          <div key={coin.id} style={{ flex: 1, minWidth:0 }}>
+            <CoinCard
+              coin={coin}
+              onClick={() => navigate(`/coins/${coin.id}`)}
+            />
+          </div>
+        ))}
       </div>
-    
+    );
+  };
+  if (loading)
+    return (
+      <div className="status-screen"
+      >
+        <p style={{ color: "red" }}>Loading Prices...</p>
+      </div>
+    );
+  if (error)
+    return (
+      <div className="status-screen"
+      >
+        <p>{error}</p>
+        <button className="back" onClick={() => (window.location.href = "/")}>
+          Try again
+        </button>
+      </div>
+    );
+
+  return (
+    <div className="app">
+      <header className="app-header">
+        <div className="auth-buttons">
+          {isAuthenticated ? (
+            <>
+              <button className="btn-logout" onClick={logout}>
+                Logout
+              </button>
+              <button
+                className="btn-watchlist"
+                onClick={() => navigate("/watchlist")}
+              >
+                Watchlist
+              </button>
+            </>
+          ) : (
+            <>
+              <button className="btn-login" onClick={() => navigate("/login")}>
+                Login
+              </button>
+              <button
+                className="btn-register"
+                onClick={() => navigate("/register")}
+              >
+                Register
+              </button>
+            </>
+          )}
+        </div>
+
+        <h1>LessGoCrypto</h1>
+        <p className="app-subtitle">Live Prices in INR</p>
+        <input
+          type="text"
+          placeholder="Search coin"
+          className="search-bar"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+        {isAuthenticated && debouncedSearch && externalResults.length > 0 && (
+          <SearchDropDown searchResults={externalResults}></SearchDropDown>
+        )}
+      </header>
+      <div className="home-layout">
+      <main
+        className="coins-panel">
+        {filteredCoins.length > 0 ?(
+          <FixedSizeList
+            height={window.innerHeight - 260}
+            width="100%"
+            itemCount={Math.ceil(filteredCoins.length / columnCount)}
+            itemSize={ROW_HEIGHT}
+          >
+            {Row}
+          </FixedSizeList>
+        ):(
+          <p className="no-coins">No coins found</p>
+        )}
+      </main>
+      <aside className="info-panel">
+        <h3>Why LessGoCrypto?</h3>
+        <ul>
+          <li>Live crypto prices in indian Rupees</li>
+          <li> Create your personal watchlist</li>
+          <li>Track investments easily</li>
+          <li>Clean & fast experience</li>
+        </ul>
+        <div className="agent-placeholder">
+          <h4>Coming Soon</h4>
+          <p>
+            <strong> AI Crypto Agent</strong> will help you with :
+          </p>
+          <ul>
+            <li>Coin Explanations</li>
+            <li>Market insights</li>
+            <li>Investment Suggestions</li>
+          </ul>
+          <p className="coming-soon-note">
+            Stay tuned- the agent will appear here.
+          </p>
+        </div>
+      </aside>
+      </div>
+    </div>
   );
 };
 

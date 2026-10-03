@@ -13,9 +13,10 @@
 .add-watchlist-btn {
 	cursor: pointer;
 	background-color: darkblue;
-	font-size: 16px;
+	font-size: 14px;
 	line-height: 1;
-	padding: 2px;
+	padding: 2px 6px;
+	white-space: nowrap;
 	border: none;
 	color: white;
 }
@@ -104,12 +105,14 @@
 
 .app {
 	min-height: 100vh;
+	background-color: #ffffff;
 }
 
 body {
 	color: #ffffff;
 	font-family: "Segoe UI", sans-serif;
 	min-height: 100vh;
+	background-color: #ffffff;
 }
 
 .app-header {
@@ -336,4 +339,158 @@ body {
 	.app-main {
 		grid-template-columns: repeat(3, 1fr);
 	}
+}
+.home-layout{
+	display:flex;
+	gap:24px;
+	max-width:1280px;
+	margin:0 auto;
+	padding: 0 24px 40px;
+	height: calc(100vh-240px);
+}
+.coins-panel{
+	flex:1;
+	min-width: 0;
+	overflow: hidden;
+	border-radius: 12px;
+}
+.info-panel{
+	width:300px;
+	flex-shrink: 0;
+	background: #f8fafc;
+	border: 1px solid #e2e8f0;
+	border-radius: 16px;
+	padding: 24px;
+	height: fit-content;
+	position:sticky;
+	top:20px;
+}
+.info-panel h3{
+	font-size:18px;
+	color:#1e293b;
+	margin-bottom: 16px;
+}
+.info-panel ul{
+	list-style: none;
+	padding: 0;
+	margin: 0 0 24px 0;
+}
+.info-panel li{
+padding: 8px 0;
+color: #475569;
+font-size: 14px;
+border-bottom: 1px solid #e2e8f0;
+}
+.info-panel li:last-child{
+	border-bottom: none;
+}
+.agent-placeholder{
+	background: #ede9fe;
+	border-radius: 12px;
+	padding:16px;
+	margin-top:16px;
+}
+.agent-placeholder h4{
+	color:#6d28d9;
+	margin-bottom:8px;
+}
+.agent-placeholder p{
+	font-size: 13px;
+	color: #4c1d95;
+	margin-bottom: 8px;
+}
+.agent-placeholder ul{
+	margin-bottom: 12px;
+}
+.agent-placeholder li{
+	color:#5b21b6;
+	border: none;
+	padding: 4px 0;
+}
+.coming-soon-note{
+	font-size: 12px;
+	color:#7c3aed;
+	font-style: italic;
+}
+.no-coins{
+	text-align:center;
+	color:#64748b;
+	margin-top:60px;
+}
+.status-screen{
+	min-height:100vh;
+	display:flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap:16px;
+}
+.coins-panel>div{
+	outline: none;
+}
+@media (max-width: 900px){
+.home-layout{
+	flex-direction: column;
+	height: auto;
+}
+.info-panel{
+	width:100%;
+	position: static;
+}
+}
+@media (max-width:640px) {
+	.add-watchlist-btn{
+		font-size: 10px;
+		padding:1px 4px;
+	}
+	.coin-name{
+		font-size:13px;
+	}
+	.coin-price{
+		font-size:16px;
+	}
+	
+}
+.portfolio-section {
+	margin-bottom:40px;
+}
+.portfolio-section h3{
+	font-size: 10px;
+	color: #1e293b;
+	margin-bottom: 16px;
+	padding-bottom: 8px;
+	border-bottom: 1px solid #e2e8f0;
+}
+
+.investments-list{
+	display:flex;
+	flex-direction: column;
+	gap:12px;
+}
+.investment-item{
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding:14px 16px;
+	border:1px solid #e2e8f0;
+	border-radius: 12px;
+	background: #f8fafc;
+}
+.investment-info{
+	display: flex;
+	flex-direction: column;
+	gap:4px;
+}
+.investment-coin{
+	font-weight:600;
+	color:#1e293b;
+}
+.investment-amount{
+	font-size:15px;
+	color:#059669;
+	font-weight: 600;
+}
+.investment-date{
+	font-size:12px;
+	color:#64748b;
 }

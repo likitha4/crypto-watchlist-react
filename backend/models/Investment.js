@@ -26,7 +26,7 @@ const investmentSchema= new mongoose.Schema({
     },
     status:{
         type:String,
-        enum:['pending','success','fail'],
+        enum:['pending','completed','fail'],
         default:'pending'
     },
     createdAt:{

@@ -37,7 +37,7 @@ app.get("/coins", async (req, res) => {
 		}
 
 		const response = await axios.get(
-			"https://api.coingecko.com/api/v3/coins/markets?vs_currency=inr&order=market_cap_desc&per_page=100&page=1&sparkline=true",
+			"https://api.coingecko.com/api/v3/coins/markets?vs_currency=inr&order=market_cap_desc&per_page=250&page=1&sparkline=true",
 			{
 				headers: {
 					"User-Agent": "Mozilla/5.0",

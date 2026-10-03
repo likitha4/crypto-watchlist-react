@@ -71,4 +71,16 @@ router.get("/investments/:coinId", authMiddleware, async (req, res) => {
 }catch(error){
 res.status(500).json({error:'Failed to fetch successful investments'})
 }});
+
+router.get("/investments", authMiddleware, async(req, res)=>{
+  try{
+  const investments= await Investment.find({
+    userId:req.user.id,
+    status:"completed",
+  }).sort({createdAt:-1});
+  return res.json(investments)
+}catch(error){
+  res.status.json({error:"Failed to fetch Investments"})
+}
+});
 module.exports = router;

@@ -186,6 +186,7 @@ const CoinDetail = () => {
         modal:{
           ondismiss: function(){
             setInvesting(false)
+            setAmount("")
             alert('Payment cancelled')
           }
         },
