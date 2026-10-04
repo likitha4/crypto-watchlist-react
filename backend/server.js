@@ -57,27 +57,29 @@ app.get("/coins", async (req, res) => {
 	}
 });
 
-app.get("/coins/:coinId", (req, res) => {
-	const coinId = req.params.coinId;
-	axios
+app.get("/coins/:coinId", async(req, res) => {
+	try{
+	const response= await axios
 		.get(
-			`https://api.coingecko.com/api/v3/coins/${coinId}?localization=false&sparkline=true`,
+			`https://api.coingecko.com/api/v3/coins/${req.params.coinId}?localization=false&sparkline=true`,
 			{
 				headers: {
 					"User-Agent": "Mozilla/5.0",
 					Accept: "application/json",
 				},
 			},
-		)
-		.then((response) => {
+		);
+		
 			res.json(response.data);
-		})
-		.catch((error) => {
-			console.log(error.response?.status);
-			console.log(error.response?.data);
-			res.send(`Error in fetching data `);
+		}
+		catch(error)  {
+			console.log(error.response?.status, error.response?.data);
+			res.status( error.response?.status ||500).json({
+				error:"Failed to fetch coin data",
+			});
+		}
 		});
-});
+
 
 app.get("/search", (req, res) => {
 	const query = req.query.q;

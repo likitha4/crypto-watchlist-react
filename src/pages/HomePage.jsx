@@ -20,6 +20,9 @@ const HomePage = () => {
   const [searchResults, setSearchResults] = useState([]);
   const debouncedSearch = useDebounce(search, 1500);
   const [columnCount, setColumnCount]= useState(2);
+  const [agentQuestion, setAgentQuestion]= useState("");
+  const [agentAnswer, setAgentAnswer]= useState("");
+  const [agentLoading, setAgentLoading] =useState(false);
 
   const { logout, isAuthenticated } = useAuth();
   const navigate = useNavigate();
@@ -109,6 +112,24 @@ const HomePage = () => {
     return ()=>window.removeEventListener("resize", updateColumns);
   },[])
 
+  const askAgent= async()=>{
+    if(!agentQuestion.trim()) return;
+    setAgentLoading(true)
+    setAgentAnswer("");
+    try{
+      const res= await fetch(`${import.meta.env.VITE_AGENT_URL}/ask`,{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({question:agentQuestion}),
+      });
+      const data = await res.json();
+      setAgentAnswer(data.answer || "No answer");
+    }catch(error){
+      setAgentAnswer("Agent is offline. Start it on  port 8001.");
+    }finally{
+      setAgentLoading(false);
+    }
+  }
   const filteredCoins = useMemo(() => {
     if (!Array.isArray(coins)) return [];
     return coins.filter((coin) =>
@@ -210,7 +231,7 @@ const HomePage = () => {
         className="coins-panel">
         {filteredCoins.length > 0 ?(
           <FixedSizeList
-            height={window.innerHeight - 260}
+            height={window.innerHeight - 300}
             width="100%"
             itemCount={Math.ceil(filteredCoins.length / columnCount)}
             itemSize={ROW_HEIGHT}
@@ -230,18 +251,21 @@ const HomePage = () => {
           <li>Clean & fast experience</li>
         </ul>
         <div className="agent-placeholder">
-          <h4>Coming Soon</h4>
+          <h4>AI Crypto Agent </h4>
           <p>
-            <strong> AI Crypto Agent</strong> will help you with :
+             Ask about prices or coin suggestions(INR).
           </p>
-          <ul>
-            <li>Coin Explanations</li>
-            <li>Market insights</li>
-            <li>Investment Suggestions</li>
-          </ul>
-          <p className="coming-soon-note">
-            Stay tuned- the agent will appear here.
-          </p>
+         <textarea value={agentQuestion} onChange={(e)=>setAgentQuestion(e.target.value)}
+         placeholder="e.g. suggest 5 coins " rows={3}
+         style={{width:"100%", color:"#111", background:"#fff"}}/>
+         <button onClick ={askAgent} disabled={agentLoading}>
+          {agentLoading?"Thinking...":"Ask"}
+         </button>
+          {agentAnswer &&(
+            <div className="agent-answer" style= {{marginTop:12, whiteSpace:"pre-wrap", color:"#111", background:"#fff"}}>
+              {agentAnswer}
+</div>
+          )}
         </div>
       </aside>
       </div>

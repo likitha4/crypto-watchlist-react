@@ -346,7 +346,7 @@ body {
 	max-width:1280px;
 	margin:0 auto;
 	padding: 0 24px 40px;
-	height: calc(100vh-240px);
+	height: calc(100vh - 240px);
 }
 .coins-panel{
 	flex:1;
@@ -361,9 +361,12 @@ body {
 	border: 1px solid #e2e8f0;
 	border-radius: 16px;
 	padding: 24px;
+	align-self:start;
+	max-height:calc(100vh - 32px);
+	overflow-y: auto;
 	height: fit-content;
 	position:sticky;
-	top:20px;
+	top:16px;
 }
 .info-panel h3{
 	font-size:18px;
@@ -493,4 +496,12 @@ border-bottom: 1px solid #e2e8f0;
 .investment-date{
 	font-size:12px;
 	color:#64748b;
+}
+.agent-answer{
+	max-height:220px;
+	overflow-y: auto;
+	color:#111;
+	font-size: 13px;
+	line-height: 1.4;
+	margin-top: 8px;
 }

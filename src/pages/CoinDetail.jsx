@@ -32,8 +32,10 @@ const CoinDetail = () => {
   const [investments, setInvestments] = useState([]);
   const [loadingInvestments, setLoadingInvestments] = useState(true);
   const { isAuthenticated, loading } = useAuth();
-  const {isInWatchlist, addToWatchlist, removeFromWatchlist}= useWatchlist()
+  const [fetchError, setFetchError]= useState(null);
+  const { isInWatchlist, addToWatchlist, removeFromWatchlist } = useWatchlist();
   const navigate = useNavigate();
+  
 
   const cachedData = localStorage.getItem("cryptoData");
   console.log(cachedData, "cached Data");
@@ -44,10 +46,9 @@ const CoinDetail = () => {
   const fetchInvestments = async () => {
     try {
       setLoadingInvestments(true);
-      const res = await fetch(
-        `${API_URL}/api/payment/investments/${coinId}`,
-        { credentials: 'include' },
-      );
+      const res = await fetch(`${API_URL}/api/payment/investments/${coinId}`, {
+        credentials: "include",
+      });
       const data = await res.json();
       setInvestments(data);
     } catch (error) {
@@ -57,42 +58,67 @@ const CoinDetail = () => {
     }
   };
   useEffect(() => {
+    setFetchError(null);
     if (coinFromLocal) {
       setCoin(coinFromLocal);
     } else {
       fetch(`${API_URL}/coins/${coinId}`)
-        .then((response) => response.json())
-        .then((data) => setCoin(data));
-    }
-    
+        .then(async (response) => {
+          const data= await response.json();
+          if(!response.ok){
+            throw new Error(data.error || "Failed to load coin");
+          }
+        setCoin(data);
+    }).catch((err)=>{
+      console.error(err);
+      setFetchError(err.message || "Failed to load coin ");
+    });
+  }
+
     if (coinId) fetchInvestments();
   }, [coinId]);
 
-    if (loading) return <h2>Loading ....</h2>;
+  if (loading) return <h2>Loading ....</h2>;
 
-    if (!isAuthenticated) {
-      return (
-        <div
-          style={{
-            minHeight: "100vh",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: "16px",
-          }}
-        >
-          <p> Please login to view coin details</p>
-          <button className="btn-register" onClick={() => navigate("/login")}>
-            {" "}
-            Login
-          </button>
-          <button className="btn-login" onClick={() => navigate("/")}>
-            Back to Home
-          </button>
-        </div>
-      );
-    }
+  if (!isAuthenticated) {
+    return (
+      <div
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: "16px",
+        }}
+      >
+        <p> Please login to view coin details</p>
+        <button className="btn-register" onClick={() => navigate("/login")}>
+          {" "}
+          Login
+        </button>
+        <button className="btn-login" onClick={() => navigate("/")}>
+          Back to Home
+        </button>
+      </div>
+    );
+  }
+  if (fetchError)
+    return (
+      <div
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: "16px",
+        }}
+      >
+        <p>{fetchError}</p>
+        <button className="btn-login" onClick={()=>navigate("/")}>Back to Home</button>
+      </div>
+    );
     if (!coin)
       return (
         <div
@@ -105,10 +131,9 @@ const CoinDetail = () => {
             gap: "16px",
           }}
         >
-          <p>Loading...</p>
+          <p>Loading ...</p>
         </div>
       );
-
   const priceChange =
     coin.price_change_percentage_24h ??
     coin.market_data?.price_change_percentage_24h ??
@@ -177,22 +202,22 @@ const CoinDetail = () => {
           if (verifyRes.ok) {
             setAmount("");
             await fetchInvestments();
-          } else{
-            alert("Payment Verification failed "|| data.error)
+            alert(data.message ||"Payment successful");
+          } else {
+            alert(data.error ||"Payment Verification failed ");
           }
           setInvesting(false);
-          alert(data.message || data.error);
         },
-        modal:{
-          ondismiss: function(){
-            setInvesting(false)
-            setAmount("")
-            alert('Payment cancelled')
-          }
+        modal: {
+          ondismiss: function () {
+            setInvesting(false);
+            setAmount("");
+            alert("Payment cancelled");
+          },
         },
-        theme:{
-          color:'#a78bfa'
-        }
+        theme: {
+          color: "#a78bfa",
+        },
       };
 
       const razorPayInstance = new window.Razorpay(options);
@@ -204,18 +229,27 @@ const CoinDetail = () => {
 
   return (
     <div style={{ padding: "16px", minHeight: "100vh" }}>
-      <button className="btn-back" onClick={() => navigate("/")}>
+      <button className="btn-back" onClick={() => navigate(-1)}>
         Back
       </button>
       <div className="detail-container">
         <div className="detail-left">
           <img src={coin.image?.large || coin.image || ""} alt={coin.name} />
           <p className="coin-info">{coin.name}</p>
-          {isAuthenticated &&(
-            <button className="watchlist-btn"
-            onClick={()=>isInWatchlist(coin.id)? removeFromWatchlist(coin.id) :addToWatchlist(coin.id, coin.name)}>
-              {isInWatchlist(coin.id)? '❤️ In Watchlist': '🤍Add to Watch list'}
-            </button>)}
+          {isAuthenticated && (
+            <button
+              className="watchlist-btn"
+              onClick={() =>
+                isInWatchlist(coin.id)
+                  ? removeFromWatchlist(coin.id)
+                  : addToWatchlist(coin.id, coin.name)
+              }
+            >
+              {isInWatchlist(coin.id)
+                ? "❤️ In Watchlist"
+                : "🤍Add to Watch list"}
+            </button>
+          )}
 
           <span className="coin-price">
             Current Price: ₹{currentPrice.toLocaleString("en-IN")}
