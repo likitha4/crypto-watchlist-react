@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo, useWindowSize } from "react";
+import { useEffect, useState, useMemo } from "react";
 import CoinCard from "../components/CoinCard";
 import { useNavigate } from "react-router-dom";
 import useDebounce from "../hooks/useDebounce";
@@ -12,6 +12,32 @@ const CACHE_KEY = "cryptoData";
 const CACHE_TIME_KEY = "lastFetch";
 const CACHE_DURATION = 5 * 60 * 1000;
 
+
+const Row = ({ index, style, data  }) => {
+  const {filteredCoins, columnCount, navigate} = data 
+  const start = index * columnCount;
+  const rowCoins = filteredCoins.slice(start, start + columnCount);
+  return (
+    <div
+      style={{
+        ...style,
+        display: "flex",
+        gap: "12px",
+        padding: "0 8px",
+        boxSizing: "border-box",
+      }}
+    >
+      {rowCoins.map((coin) => (
+        <div key={coin.id} style={{ flex: 1, minWidth:0 }}>
+          <CoinCard
+            coin={coin}
+            onClick={() => navigate(`/coins/${coin.id}`)}
+          />
+        </div>
+      ))}
+    </div>
+  );
+};
 const HomePage = () => {
   const [coins, setCoins] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -28,7 +54,7 @@ const HomePage = () => {
   const navigate = useNavigate();
 
   // const COLUMN_COUNT = 2;
-  const ROW_HEIGHT = 200;
+  const ROW_HEIGHT = 160;
 
   useEffect(() => {
     const cachedData = localStorage.getItem(CACHE_KEY);
@@ -140,30 +166,7 @@ const HomePage = () => {
   const externalResults = searchResults.filter(
     (result) => !coins.some((coin) => coin.id === result.id),
   );
-  const Row = ({ index, style }) => {
-    const start = index * columnCount;
-    const rowCoins = filteredCoins.slice(start, start + columnCount);
-    return (
-      <div
-        style={{
-          ...style,
-          display: "flex",
-          gap: "12px",
-          padding: "0 8px",
-          boxSizing: "border-box",
-        }}
-      >
-        {rowCoins.map((coin) => (
-          <div key={coin.id} style={{ flex: 1, minWidth:0 }}>
-            <CoinCard
-              coin={coin}
-              onClick={() => navigate(`/coins/${coin.id}`)}
-            />
-          </div>
-        ))}
-      </div>
-    );
-  };
+  
   if (loading)
     return (
       <div className="status-screen"
@@ -230,7 +233,7 @@ const HomePage = () => {
       <main
         className="coins-panel">
         {filteredCoins.length > 0 ?(
-          <FixedSizeList
+          <FixedSizeList itemData={{filteredCoins, columnCount, navigate}}
             height={window.innerHeight - 300}
             width="100%"
             itemCount={Math.ceil(filteredCoins.length / columnCount)}
@@ -251,9 +254,9 @@ const HomePage = () => {
           <li>Clean & fast experience</li>
         </ul>
         <div className="agent-placeholder">
-          <h4>AI Crypto Agent </h4>
+          <h4>Crypto Agent </h4>
           <p>
-             Ask about prices or coin suggestions(INR).
+             heyy! Ask me about prices or coin suggestions.
           </p>
          <textarea value={agentQuestion} onChange={(e)=>setAgentQuestion(e.target.value)}
          placeholder="e.g. suggest 5 coins " rows={3}

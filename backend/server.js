@@ -61,7 +61,7 @@ app.get("/coins/:coinId", async(req, res) => {
 	try{
 	const response= await axios
 		.get(
-			`https://api.coingecko.com/api/v3/coins/${req.params.coinId}?localization=false&sparkline=true`,
+			`https://api.coingecko.com/api/v3/coins/${req.params.coinId}?localization=false`,
 			{
 				headers: {
 					"User-Agent": "Mozilla/5.0",

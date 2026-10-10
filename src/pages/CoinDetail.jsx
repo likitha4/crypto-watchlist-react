@@ -32,16 +32,9 @@ const CoinDetail = () => {
   const [investments, setInvestments] = useState([]);
   const [loadingInvestments, setLoadingInvestments] = useState(true);
   const { isAuthenticated, loading } = useAuth();
-  const [fetchError, setFetchError]= useState(null);
+  const [fetchError, setFetchError] = useState(null);
   const { isInWatchlist, addToWatchlist, removeFromWatchlist } = useWatchlist();
   const navigate = useNavigate();
-  
-
-  const cachedData = localStorage.getItem("cryptoData");
-  console.log(cachedData, "cached Data");
-  const coins = cachedData ? JSON.parse(cachedData) : [];
-  // console.log(coins, "coins");
-  const coinFromLocal = coins.find((c) => c.id === coinId);
 
   const fetchInvestments = async () => {
     try {
@@ -58,23 +51,26 @@ const CoinDetail = () => {
     }
   };
   useEffect(() => {
+    const cachedData = localStorage.getItem("cryptoData");
+    const coins = cachedData ? JSON.parse(cachedData) : [];
+    const coinFromLocal = coins.find((c) => c.id === coinId);
+
     setFetchError(null);
     if (coinFromLocal) {
       setCoin(coinFromLocal);
-    } else {
-      fetch(`${API_URL}/coins/${coinId}`)
-        .then(async (response) => {
-          const data= await response.json();
-          if(!response.ok){
-            throw new Error(data.error || "Failed to load coin");
-          }
-        setCoin(data);
-    }).catch((err)=>{
-      console.error(err);
-      setFetchError(err.message || "Failed to load coin ");
-    });
-  }
-
+    }else{
+    fetch(`${API_URL}/coins/${coinId}`)
+      .then((response) => response.json())
+      .then((data) => {
+        if (data && !data.error) {
+          setCoin(data);
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        setFetchError(err.message || "Failed to load coin ");
+      });
+    }
     if (coinId) fetchInvestments();
   }, [coinId]);
 
@@ -116,24 +112,26 @@ const CoinDetail = () => {
         }}
       >
         <p>{fetchError}</p>
-        <button className="btn-login" onClick={()=>navigate("/")}>Back to Home</button>
+        <button className="btn-login" onClick={() => navigate("/")}>
+          Back to Home
+        </button>
       </div>
     );
-    if (!coin)
-      return (
-        <div
-          style={{
-            minHeight: "100vh",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: "16px",
-          }}
-        >
-          <p>Loading ...</p>
-        </div>
-      );
+  if (!coin)
+    return (
+      <div
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: "16px",
+        }}
+      >
+        <p>Loading ...</p>
+      </div>
+    );
   const priceChange =
     coin.price_change_percentage_24h ??
     coin.market_data?.price_change_percentage_24h ??
@@ -148,6 +146,9 @@ const CoinDetail = () => {
     coin.market_data?.sparkline_in_7d?.price ||
     [];
   console.log(coin.sparkline_in_7d);
+  console.log("coin object keys:", Object.keys(coin));
+  console.log("sparkline:", coin.sparkline_in_7d);
+  console.log("market_data sparkline:", coin.market_data?.sparkline_in_7d);
 
   const data = {
     labels: sparkLinePrices.map((_, index) => index),
@@ -202,9 +203,9 @@ const CoinDetail = () => {
           if (verifyRes.ok) {
             setAmount("");
             await fetchInvestments();
-            alert(data.message ||"Payment successful");
+            alert(data.message || "Payment successful");
           } else {
-            alert(data.error ||"Payment Verification failed ");
+            alert(data.error || "Payment Verification failed ");
           }
           setInvesting(false);
         },
