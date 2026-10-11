@@ -64,9 +64,6 @@ const HomePage = () => {
     if (cachedData && lastFetch && now - lastFetch < CACHE_DURATION) {
       setCoins(JSON.parse(cachedData));
       setLoading(false);
-
-      console.log("coins", coins.length);
-
       return;
     }
 

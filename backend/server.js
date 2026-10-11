@@ -30,12 +30,15 @@ app.use('/api/payment',require('./routes/payment'));
 app.get("/coins", async (req, res) => {
 	try {
 		const cache = await CoinCache.findOne().sort({ fetchedAt: -1 });
+		console.log('cache found', cache? 'yes':'no')
 		const now = Date.now();
 		const CACHE_DURATION = 10 * 60 * 1000;
+
 		if (cache && now - new Date(cache.fetchedAt).getTime() < CACHE_DURATION) {
+			console.log('serving from mongodb cache')
 			return res.json(cache.coins);
 		}
-
+        console.log('fetching from coingecko...')
 		const response = await axios.get(
 			"https://api.coingecko.com/api/v3/coins/markets?vs_currency=inr&order=market_cap_desc&per_page=250&page=1&sparkline=true",
 			{
@@ -47,10 +50,13 @@ app.get("/coins", async (req, res) => {
 		);
 		await CoinCache.deleteMany({});
 		await CoinCache.create({ coins: response.data });
+		console.log('saved to mongodb cache')
 		return res.json(response.data);
 	} catch (error) {
+		console.log('error occurred :', error.message)
 		const staleCache = await CoinCache.findOne().sort({ fetchedAt: -1 });
 		if (staleCache) {
+			console.log('serving stale cache')
 			return res.json(staleCache.coins);
 		}
 		return res.status(500).json({ error: "Failed to fetch" });
