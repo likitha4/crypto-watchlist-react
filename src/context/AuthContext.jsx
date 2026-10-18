@@ -8,33 +8,39 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-
     fetch(`${API_URL}/api/auth/me`, {
       credentials: "include",
     })
-      .then((res) => res.json())
+      .then((res) => {
+        console.log("/me status", res.status);
+        return res.json();
+      })
       .then((data) => {
+        console.log("/me data:", data);
         if (data.user) {
           setUser(data.user);
           setIsAuthenticated(true);
+        } else {
+          setUser(null);
+          setIsAuthenticated(false);
         }
       })
-      .catch(() => {})
+      .catch(() => {
+        setUser(null);
+        setIsAuthenticated(false);
+      })
       .finally(() => setLoading(false));
-
   }, []);
 
-  const login = () => {
-    fetch(`${API_URL}/api/auth/me`, {
+  const login = async () => {
+    const res = await fetch(`${API_URL}/api/auth/me`, {
       credentials: "include",
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.user) {
-          setUser(data.user);
-          setIsAuthenticated(true);
-        }
-      });
+    });
+    const data = await res.json();
+    if (res.ok && data.user) {
+      setUser(data.user);
+      setIsAuthenticated(true);
+    }
   };
 
   const logout = async () => {
@@ -46,7 +52,9 @@ export const AuthProvider = ({ children }) => {
     setIsAuthenticated(false);
   };
   return (
-    <AuthContext.Provider value={{  user, isAuthenticated,login, logout,loading }}>
+    <AuthContext.Provider
+      value={{ user, isAuthenticated, login, logout, loading }}
+    >
       {children}
     </AuthContext.Provider>
   );

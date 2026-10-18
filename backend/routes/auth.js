@@ -5,6 +5,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const authMiddleware = require("../middleware/authMiddleware");
 
+const isProd=process.env.NODE_ENV==='production'
 router.post("/register", async (req, res) => {
 	const { email, password } = req.body;
 	try {
@@ -36,7 +37,7 @@ router.post("/login", async (req, res) => {
 			expiresIn: "7d",
 		});
 		res.cookie('token', jwtoken,{
-			httpOnly:true, secure:true, sameSite:'none', maxAge:7*24*60*60*1000
+			httpOnly:true, secure:isProd, sameSite:isProd ?"none":"lax", path:'/',maxAge:7*24*60*60*1000
 		});
  return res.json({message:'Login Successful'})
 	} catch (error) {
@@ -45,10 +46,17 @@ router.post("/login", async (req, res) => {
 });
 router.get('/me', authMiddleware, async(req,res)=>{
 	try{
+		console.log('req.user:', req.user)
 		const user= await User.findById(req.user.id).select('-password')
-		res.json({user})
+		console.log("user found", user)
+		if(!user){
+			return res.status(404).json({error:'User not found'})
+		}
+		res.set("Cache-control","no-store");
+		return res.json({user})
 
 	}catch(error){
+		console.log("me error",error);
 		res.status(401).json({error:'Not authorized'})
 	}
 })
