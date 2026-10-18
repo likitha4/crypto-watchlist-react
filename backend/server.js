@@ -10,6 +10,7 @@ const CoinCache = require("./models/CoinCache");
 const connectDB = require("./config/db");
 
 connectDB();
+app.set("trust proxy",1);
 app.use(cookieParser())
 app.use(
 	cors({
