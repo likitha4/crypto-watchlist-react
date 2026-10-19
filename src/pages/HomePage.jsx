@@ -7,7 +7,7 @@ import SearchDropDown from "../components/SearchDropDown";
 import { useAuth } from "../context/AuthContext";
 import { FixedSizeList } from "react-window";
 
-const API_URL = import.meta.env.VITE_APP_URL;
+const API_URL = import.meta.env.VITE_APP_URL || "";
 const CACHE_KEY = "cryptoData";
 const CACHE_TIME_KEY = "lastFetch";
 const CACHE_DURATION = 5 * 60 * 1000;

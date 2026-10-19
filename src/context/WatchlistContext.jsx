@@ -6,7 +6,7 @@ const WatchlistContext = createContext();
 export const WatchlistProvider = ({ children }) => {
 	const [watchlist, setWatchlist] = useState([]);
 	const { isAuthenticated } = useAuth();
-	const API_URL = import.meta.env.VITE_APP_URL;
+	const API_URL = import.meta.env.VITE_APP_URL || "";
 	useEffect(() => {
 		if (!isAuthenticated) {
 			setWatchlist([]);

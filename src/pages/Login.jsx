@@ -3,7 +3,7 @@ import { useAuth } from "../context/AuthContext";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Auth.css";
-const API_URI = import.meta.env.VITE_APP_URL;
+const API_URI = import.meta.env.VITE_APP_URL || "";
 
 function Login() {
   const { login } = useAuth();

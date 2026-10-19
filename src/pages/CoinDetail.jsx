@@ -22,7 +22,7 @@ ChartJS.register(
   CategoryScale,
   LinearScale,
 );
-const API_URL = import.meta.env.VITE_APP_URL;
+const API_URL = import.meta.env.VITE_APP_URL || "";
 
 const CoinDetail = () => {
   const { coinId } = useParams();

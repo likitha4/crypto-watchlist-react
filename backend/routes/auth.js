@@ -5,7 +5,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const authMiddleware = require("../middleware/authMiddleware");
 
-const isProd=process.env.NODE_ENV==='production'
+const isProd=process.env.NODE_ENV==='production' || process.env.RENDER=== "true";
 router.post("/register", async (req, res) => {
 	const { email, password } = req.body;
 	try {
@@ -37,9 +37,9 @@ router.post("/login", async (req, res) => {
 			expiresIn: "7d",
 		});
 		res.cookie('token', jwtoken,{
-			httpOnly:true, secure:isProd, sameSite:isProd ?"none":"lax", path:'/',maxAge:7*24*60*60*1000
+			httpOnly:true, secure:isProd, sameSite:isProd ?"lax":"lax", path:'/',maxAge:7*24*60*60*1000
 		});
- return res.json({message:'Login Successful'})
+ return res.json({message:'Login Successful', token:jwtoken})
 	} catch (error) {
 		return res.status(500).json({ error: "Error in logging " });
 	}
@@ -65,7 +65,8 @@ router.post('/logout',(req,res)=>{
 	res.clearCookie('token',{
 		httpOnly:true,
 		secure:true,
-		sameSite:'none'
+		sameSite:"lax",
+		path:"/",
 	})
 	res.json({message:'Logged out successfully'})
 })

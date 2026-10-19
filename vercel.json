@@ -1,5 +1,24 @@
 {
-    "rewrites":[
-        {"source": "/(.*)", "destination":"/index.html"}
+    "rewrites": [
+      {
+        "source": "/api/:path*",
+        "destination": "https://lessgo-crypto.onrender.com/api/:path*"
+      },
+      {
+        "source": "/coins",
+        "destination": "https://lessgo-crypto.onrender.com/coins"
+      },
+      {
+        "source": "/coins/:path*",
+        "destination": "https://lessgo-crypto.onrender.com/coins/:path*"
+      },
+      {
+        "source": "/search",
+        "destination": "https://lessgo-crypto.onrender.com/search"
+      },
+      {
+        "source": "/(.*)",
+        "destination": "/index.html"
+      }
     ]
-}
+  }

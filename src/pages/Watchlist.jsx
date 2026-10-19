@@ -3,7 +3,7 @@ import { useAuth } from "../context/AuthContext";
 import {useState, useEffect} from "react";
 import { useNavigate } from "react-router-dom";
 
-const API_URL= import.meta.env.VITE_APP_URL
+const API_URL= import.meta.env.VITE_APP_URL || ""
 const Watchlist = () => {
 	const { watchlist, removeFromWatchlist } = useWatchlist();
 	const { isAuthenticated } = useAuth();
